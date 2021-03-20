@@ -12,7 +12,7 @@
 <body>
 <div class="main">
     <div class="main-grid">
-        <aside class="main-contents">
+        <aside class="">
             Side Bar/My playlists
             <div class="logo">
                 <img src="./assets/imgs/logo.svg">
@@ -48,13 +48,38 @@
                 </div>
             </header>
             <div class="browse">
-                <div class="recent-playlists"></div>
-                <div class="most-played-music"></div>
-                <div class="fav-music"></div>
-                <div class="artist-cat"></div>
-                <div class="album-cat"></div>
-                <div class="new-releases"></div>
-                <div class="my-playlists"></div>
+                <div class="recent-playlists">
+                    <h3>Recently Played</h3>
+
+                </div>
+                <div class="most-played-music">
+                    <h3>Top Music</h3>
+                    <div class="summary-cards">
+                        <div class="my-card"></div>
+                        <div class="my-card"></div>
+                        <div class="my-card"></div>
+                        <!-- <div class="my-card"></div>
+                        <div class="my-card"></div>
+                        <div class="my-card"></div>
+                        <div class="my-card"></div>
+                        <div class="my-card"></div> -->
+                    </div>
+                </div>
+                <div class="fav-music">
+                    <h3>Your Favourites</h3>
+                </div>
+                <div class="artist-cat">
+                    <h3>Discover Artists</h3>
+                </div>
+                <div class="album-cat">
+                    <h3>Recommended Albums</h3>
+                </div>
+                <div class="new-releases">
+                    <h3>New Releases</h3>
+                </div>
+                <div class="my-playlists">
+                    <h3>Your Playlists</h3>
+                </div>
             </div>
         </div>
 
@@ -78,14 +103,12 @@
             </div>
             <div class="options">Q Volume ---</div> -->
 
+            <button class="toggle-playlists">View/Hide playlists</button>
             <div id="3rd-p-player">
             </div>
-            <button class="toggle-playlists">View/Hide playlists</button>
+            <!-- <button id="button" class="rythm-bass">Add 1 new song</button> -->
         </div>
     </div>
-
-    <button id="button" class="rythm-bass">Add 1 new song</button>
-    <div class="rythm-bass"></div>
 
     <script type="text/javascript" src="./assets/js/rythm.js"></script>
     <script type="text/javascript">

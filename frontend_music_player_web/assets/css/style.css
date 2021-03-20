@@ -1,3 +1,7 @@
+:root {
+    --card-height: 20rem;
+}
+
 html {
   box-sizing: border-box;
 }
@@ -8,6 +12,7 @@ html {
 
 .main-grid {
     display: grid;
+    height: 99vh;
     grid-template-columns: 1fr 7fr;
     grid-template-rows: 8fr 1fr;
     grid-template-areas:
@@ -16,7 +21,7 @@ html {
     grid-gap: 1rem;
 }
 
-aside.main-contents {
+aside {
     grid-area: sidebar;
 }
 
@@ -86,3 +91,22 @@ aside.main-contents {
     height: 0.6rem;
 }*/
 
+.browse {
+    /*display: flex;*/
+    /*flex-direction: column;*/
+}
+
+.browse .summary-cards {
+    display: grid;
+    gap: 20px;
+    grid-auto-rows: 0;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    overflow-y: hidden;
+}
+
+.my-card {
+    width: 200px;
+    height: 200px;
+    background-color: blue;
+}
