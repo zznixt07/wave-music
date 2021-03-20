@@ -38,6 +38,7 @@ aside.main-contents {
     justify-content: space-between;
 }
 
+/*
 .music-controller {
     display: flex;
     justify-content: space-between;
@@ -83,4 +84,5 @@ aside.main-contents {
 .controls-bar .progress-bar {
     width: 90%;
     height: 0.6rem;
-}
+}*/
+
