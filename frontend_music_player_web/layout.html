@@ -7,6 +7,13 @@
     <!-- <script src="./assets/js/howler.js"></script> -->
     <link rel="stylesheet" type="text/css" href="./assets/css/APlayer.min.css">
     <script defer src="./assets/js/APlayer.min.js"></script>
+    <script defer src="./assets/js/ftellipsis.min.js"></script>
+    <script type="module">
+        const doubleLine = document.getElementsByClassName('card-info')[0]
+        const ellipsis = new Ellipsis(doubleLine);
+        ellipsis.calc()
+        ellipsis.set()
+    </script>
     <script type="module" src="./assets/js/player.js"></script>
 </head>
 <body>
@@ -55,14 +62,17 @@
                 <div class="most-played-music">
                     <h3>Top Music</h3>
                     <div class="summary-cards">
+                        <div class="my-card">
+                            <div class="cover">
+                                <img src="./assets/imgs/1.jpg">
+                            </div>
+                            <div class="card-info">
+                                <h4 class="title">Just try to forget these songs. We dare you</h4>
+                                <span>One hit wonders that will stay in your heads heads heads heads heads heads heads forever after you have heard it.</span>
+                            </div>
+                        </div>
                         <div class="my-card"></div>
                         <div class="my-card"></div>
-                        <div class="my-card"></div>
-                        <!-- <div class="my-card"></div>
-                        <div class="my-card"></div>
-                        <div class="my-card"></div>
-                        <div class="my-card"></div>
-                        <div class="my-card"></div> -->
                     </div>
                 </div>
                 <div class="fav-music">
