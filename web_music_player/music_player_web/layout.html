@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wave</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <!-- <script src="./assets/js/howler.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="./assets/css/APlayer.min.css">
+    <script defer src="./assets/js/APlayer.min.js"></script>
+    <script type="module" src="./assets/js/player.js"></script>
+</head>
+<body>
+<div class="main">
+    <div class="main-grid">
+        <aside class="main-contents">
+            Side Bar/My playlists
+            <div class="logo">
+                <img src="./assets/imgs/logo.svg">
+                Wave
+            </div>
+            <p>Home</p>
+            <p>Search</p>
+            <p>Your library</p>
+            <section class="playlists">
+                <h3>PLAYLISTS</h3>
+                <p>Create playlist</p>
+                <p>Fav songs</p>
+            </section>
+        </aside>
+
+        <div class="content">
+            <header>
+                <div class="navigate">
+                    &lt; &gt;
+                </div>
+                
+                <div class="account">
+                    <a href="#">Upgrade</a>
+                    <span class="account-dropdown">
+                        <img class="user-profile-pic">
+                        <span class="username">22ioagadg...</span>
+                    </span>
+                </div>
+            </header>
+
+        </div>
+        <div class="music-controller">
+            <div class="info">Album art and info</div>
+            <div class="controller">
+                <!-- -------Control music------ -->
+                <div class="controls">
+                    <div class="controls-btns">
+                        <span>Shf</span>
+                        <span>Prev</span>
+                        <span>P/P</span>
+                        <span>Nxt</span>
+                        <span>Rep</span>
+                    </div>
+                    <div class="controls-bar">
+                        <!-- <progress class="progress-bar" value="" max="100"></progress> -->
+                        <audio class="progress-bar" controls src="./assets/audio/1.mp3"></audio>
+                    </div>
+                </div>
+            </div>
+            <div class="options">Q Volume ---</div>
+        </div>
+    </div>
+
+    <button id="button" class="rythm-bass">Add 1 new song</button>
+    <div class="rythm-bass"></div>
+    <div id="3rd-p-player">
+        
+    </div>
+    <script type="text/javascript" src="./assets/js/rythm.js"></script>
+    <script type="text/javascript">
+        window.onload = function (argument) {
+            const rythm = new Rythm()
+            rythm.setMusic('./assets/audio/1.mp3')
+            rythm.start()
+        }
+    </script>
+</div>
+</body>
+</html>

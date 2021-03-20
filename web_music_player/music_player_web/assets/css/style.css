@@ -1,0 +1,86 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 7fr;
+    grid-template-rows: 8fr 1fr;
+    grid-template-areas:
+        "sidebar content"
+        "player player";
+    grid-gap: 1rem;
+}
+
+aside.main-contents {
+    grid-area: sidebar;
+}
+
+.content {
+    grid-area: content;
+}
+
+.music-controller {
+    grid-area: player;
+}
+
+.logo img {
+    width: 64px;
+    height: 64px;
+}
+
+.content header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.music-controller {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.controls {
+    display: grid;
+    grid-template-rows: 3fr 2fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+        "buttons"
+        "seekbar"
+}
+
+.music-controller .info {
+    flex: 2;
+}
+
+.music-controller .controller {
+    flex: 4;
+}
+
+.music-controller .options {
+    flex: 1;
+}
+
+.controls .controls-btns {
+    grid-area: buttons;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 2;
+    gap: 1rem;
+}
+
+.controls .controls-bar {
+    grid-area: seekbar;
+    text-align: center;
+}
+
+.controls-bar .progress-bar {
+    width: 90%;
+    height: 0.6rem;
+}
