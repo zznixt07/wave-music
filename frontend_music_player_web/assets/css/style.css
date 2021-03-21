@@ -17,12 +17,12 @@ body {
 .main-grid {
     display: grid;
     height: 100vh;
-    grid-template-columns: 1fr 7fr;
+    grid-template-columns: auto 7fr;
     grid-template-rows: 8fr 1fr;
     grid-template-areas:
         "sidebar content"
         "player player";
-    grid-gap: 1rem;
+    /*grid-gap: 1rem;*/
 }
 
 aside {
@@ -113,7 +113,8 @@ header.sticky-nav {
     column-gap: 20px;
     grid-auto-rows: 0;
     grid-template-rows: 1fr;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    /*grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));*/
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     /*grid-template-columns: repeat(auto-fill, 15%);*/
     overflow-y: hidden;
     justify-items: center;
@@ -124,6 +125,18 @@ header.sticky-nav {
     background-color: #b3b3b3;
     /*justify-self: center;*/
     padding: 0.7rem;
+}
+
+@media screen and (max-width: 600px) {
+    .my-card {
+        width: 100px;
+        padding: 0;
+    }
+    
+    aside {
+        display: none;
+    }
+
 }
 
 .my-card cover {
