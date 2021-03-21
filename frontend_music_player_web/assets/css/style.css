@@ -10,9 +10,13 @@ html {
   box-sizing: inherit;
 }
 
+body {
+    margin: 0 auto;
+}
+
 .main-grid {
     display: grid;
-    height: 99vh;
+    height: 100vh;
     grid-template-columns: 1fr 7fr;
     grid-template-rows: 8fr 1fr;
     grid-template-areas:
@@ -38,9 +42,17 @@ aside {
     height: 64px;
 }
 
-.content header {
+.content {
+    padding: 0 1rem;
+    overflow-y: scroll;
+}
+
+header.sticky-nav {
     display: flex;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background-color: rgba(10, 10, 10, 0.3);
 }
 
 /*
@@ -98,18 +110,17 @@ aside {
 
 .browse .summary-cards {
     display: grid;
-    column-gap: 1px;
+    column-gap: 20px;
     grid-auto-rows: 0;
     grid-template-rows: 1fr;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     /*grid-template-columns: repeat(auto-fill, 15%);*/
     overflow-y: hidden;
     justify-items: center;
 }
 
 .my-card {
-    width: 180px;
-    height: 260px;
+    width: 100%;
     background-color: #b3b3b3;
     /*justify-self: center;*/
     padding: 0.7rem;
@@ -124,18 +135,19 @@ aside {
     height: 100%;
 }
 
-.card-info {
-    overflow: hidden;
-    /*white-space: normal;*/
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
-}
-
 .card-info > * {
     margin: 0.55rem auto;
-    text-overflow: ellipsis;
-    /*white-space: nowrap;*/
     overflow: hidden;
+}
+
+.card-info > .title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-info div {
+    height: 50px;
+    line-height: 1.1rem;
 }
 
 .card-info .title {

@@ -7,14 +7,108 @@
     <!-- <script src="./assets/js/howler.js"></script> -->
     <link rel="stylesheet" type="text/css" href="./assets/css/APlayer.min.css">
     <script defer src="./assets/js/APlayer.min.js"></script>
-    <script defer src="./assets/js/ftellipsis.min.js"></script>
+    <!-- <script defer src="./assets/js/ftellipsis.min.js"></script>
     <script type="module">
-        const doubleLine = document.getElementsByClassName('card-info')[0]
+        const doubleLine = document.querySelector('.card-info')
         const ellipsis = new Ellipsis(doubleLine);
         ellipsis.calc()
         ellipsis.set()
-    </script>
+    </script> -->
     <script type="module" src="./assets/js/player.js"></script>
+    <script type="module">
+        function randomInt(min, max) {
+            // [min-max)
+            return Math.floor(Math.random() * (max - min)) + min
+        }
+
+        const sections = document.querySelectorAll('.browse > *')
+        const reusable_html = (i) => `
+            <div class="summary-cards">
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                <div class="my-card">
+                    <div class="cover">
+                        
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">Just try to forget these songs. We dare you</h4>
+                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                    </div>
+                </div>
+                
+            </div>`
+        for (let section of sections) {
+            section.insertAdjacentHTML('beforeend', reusable_html(randomInt(1, 41)))
+        }
+        const cards = document.querySelectorAll('.my-card .cover')
+        for (let card of cards) {
+            const img = new Image();
+            img.src = `./assets/imgs/${randomInt(1, 41)}.jfif`
+            card.appendChild(img)
+        }
+
+    </script>
 </head>
 <body>
 <div class="main">
@@ -34,12 +128,9 @@
                 <p>Fav songs</p>
             </section>
         </aside>
-
+   
         <div class="content">
-            <header>
-                <!-- <div class="navigate">
-                    &lt; &gt;
-                </div> -->
+            <header class="sticky-nav">
                 <div class="tabs">
                     <a href="#">Playlists</a>
                     <a href="#">Artists</a>
@@ -57,23 +148,38 @@
             <div class="browse">
                 <div class="recent-playlists">
                     <h3>Recently Played</h3>
-
                 </div>
                 <div class="most-played-music">
                     <h3>Top Music</h3>
-                    <div class="summary-cards">
+                    <!-- <div class="summary-cards">
                         <div class="my-card">
                             <div class="cover">
-                                <img src="./assets/imgs/1.jpg">
                             </div>
                             <div class="card-info">
                                 <h4 class="title">Just try to forget these songs. We dare you</h4>
-                                <span>One hit wonders that will stay in your heads heads heads heads heads heads heads forever after you have heard it.</span>
+                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
                             </div>
                         </div>
-                        <div class="my-card"></div>
-                        <div class="my-card"></div>
-                    </div>
+                        <div class="my-card">
+                            <div class="cover">
+                                
+                            </div>
+                            <div class="card-info">
+                                <h4 class="title">Just try to forget these songs. We dare you</h4>
+                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                            </div>
+                        </div>
+                        <div class="my-card">
+                            <div class="cover">
+                                
+                            </div>
+                            <div class="card-info">
+                                <h4 class="title">Just try to forget these songs. We dare you</h4>
+                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                            </div>
+                        </div>
+                        
+                    </div> -->
                 </div>
                 <div class="fav-music">
                     <h3>Your Favourites</h3>
