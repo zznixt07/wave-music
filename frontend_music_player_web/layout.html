@@ -29,59 +29,37 @@
         const reusable_html = (i) => `
             <div class="summary-cards">
                 <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
+                    <a href='#'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
                 </div>
-                <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
+               <div class="my-card">
+                    <a href='#'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
                 </div>
-                <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
+               <div class="my-card">
+                    <a href='#'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
                 </div>
-                <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
-                </div>
-                <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
-                </div>
-                <div class="my-card">
-                    <div class="cover">
-                        
-                    </div>
-                    <div class="card-info">
-                        <h4 class="title">Just try to forget these songs. We dare you</h4>
-                        <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                    </div>
-                </div>
+               
+                          
                 
             </div>`
         for (let section of sections) {
@@ -137,35 +115,6 @@
                 </div>
                 <div class="most-played-music">
                     <h3>Top Music</h3>
-                    <!-- <div class="summary-cards">
-                        <div class="my-card">
-                            <div class="cover">
-                            </div>
-                            <div class="card-info">
-                                <h4 class="title">Just try to forget these songs. We dare you</h4>
-                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                            </div>
-                        </div>
-                        <div class="my-card">
-                            <div class="cover">
-                                
-                            </div>
-                            <div class="card-info">
-                                <h4 class="title">Just try to forget these songs. We dare you</h4>
-                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                            </div>
-                        </div>
-                        <div class="my-card">
-                            <div class="cover">
-                                
-                            </div>
-                            <div class="card-info">
-                                <h4 class="title">Just try to forget these songs. We dare you</h4>
-                                <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                            </div>
-                        </div>
-                        
-                    </div> -->
                 </div>
                 <div class="fav-music">
                     <h3>Your Favourites</h3>
@@ -205,20 +154,25 @@
             </div>
             <div class="options">Q Volume ---</div> -->
 
+            <audio class="progress-bar" controls src="./assets/audio/1.mp3"></audio>
             <button class="toggle-playlists">View/Hide playlists</button>
-            <div id="3rd-p-player">
-            </div>
+            <button class="prev-track">Prev</button>
+            <button class="play-or-pause-track">|></button>
+            <button class="next-track">Next</button>
+            <div id="3rd-p-player"></div>
             <!-- <button id="button" class="rythm-bass">Add 1 new song</button> -->
         </div>
     </div>
 
     <script type="text/javascript" src="./assets/js/rythm.js"></script>
     <script type="text/javascript">
-        window.onload = function (argument) {
+        window.onload = function () {
             const rythm = new Rythm()
             rythm.setMusic('./assets/audio/1.mp3')
             // rythm.start()
+
         }
+
     </script>
 </div>
 </body>
