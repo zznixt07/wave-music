@@ -17,6 +17,7 @@ const ap = new APlayer({
     ],
 });
 
+window.ap = ap
 
 const audioElem = document.querySelector('audio')
 const playPauseBtn = document.querySelector('.play-or-pause-track')
@@ -42,23 +43,23 @@ ap.on('pause', function () {
     playPauseBtn.textContent = '|>'
 })
 
-document.querySelector('.aplayer .aplayer-music').insertAdjacentHTML(
-    'beforeend',
+document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
+    'afterbegin',
     `<div class="controls-btns">
-        <button class="prev-track">Prev</button>
-        <button class="play-or-pause-track">|></button>
-        <button class="next-track">Next</button>
+        <button class="prev-track ri-skip-back-fill"></button>
+        <button class="play-or-pause-track ri-play-circle-fill"></button>
+        <button class="next-track ri-skip-forward-fill"></button>
     </div>`
 )
 
 
-// const btn = document.getElementById('button')
-// btn.addEventListener('click', function () {
-//     ap.list.add([
-//         {
-//             name: 'walking on the moon',
-//             artist: 'Computer Glitch',
-//             url: './assets/audio/walking.webm',
-//         },
-//     ]);
-// })
+const btn = document.getElementById('button')
+btn.addEventListener('click', function () {
+    ap.list.add([
+        {
+            name: 'walking on the moon',
+            artist: 'Computer Glitch',
+            url: './assets/audio/walking.webm',
+        },
+    ]);
+})
