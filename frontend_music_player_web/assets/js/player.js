@@ -17,13 +17,19 @@ const ap = new APlayer({
     ],
 });
 
-window.ap = ap
+document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
+    'afterbegin',
+    `<div class="controls-btns">
+        <button class="prev-track ri-skip-back-fill"></button>
+        <button class="play-or-pause-track ri-play-circle-fill"></button>
+        <button class="next-track ri-skip-forward-fill"></button>
+    </div>`
+)
 
-const audioElem = document.querySelector('audio')
+
 const playPauseBtn = document.querySelector('.play-or-pause-track')
 let paused = true
 playPauseBtn.addEventListener('click', function () {
-    // audioElem.play()
     if (paused) {
         ap.play()
         paused = false
@@ -36,21 +42,14 @@ playPauseBtn.addEventListener('click', function () {
 })
 
 ap.on('play', function () {
-    playPauseBtn.textContent = '||'
+    playPauseBtn.classList.remove('ri-play-circle-fill')
+    playPauseBtn.classList.add('ri-pause-circle-fill')
 })
 
 ap.on('pause', function () {
-    playPauseBtn.textContent = '|>'
+    playPauseBtn.classList.remove('ri-pause-circle-fill')
+    playPauseBtn.classList.add('ri-play-circle-fill')  
 })
-
-document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
-    'afterbegin',
-    `<div class="controls-btns">
-        <button class="prev-track ri-skip-back-fill"></button>
-        <button class="play-or-pause-track ri-play-circle-fill"></button>
-        <button class="next-track ri-skip-forward-fill"></button>
-    </div>`
-)
 
 
 const btn = document.getElementById('button')
