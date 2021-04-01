@@ -90,6 +90,11 @@ class Userbase(Profile):
     playlists = models.ManyToManyField('Playlist', through='UserbasePlaylists')
     followers = models.ManyToManyField('self', symmetrical=False, through='Followers',)
 
+
+class Adminbase(Profile):
+    username = models.CharField(max_length=32, unique=True, null=False, blank=False)
+    password = models.CharField(max_length=64)
+    level = models.CharField(max_length=1)
     
 class Artist(Userbase):
     # first_name = models.CharField(max_length=200)
@@ -110,13 +115,12 @@ class Playlist(models.Model):
         verbose_name='restricts other users from viewing this playlist'
         )
 
-    followers = models.PositiveIntegerField(default=0)
     sort_by = models.CharField(max_length=30, choices=SORT_BY, default='date',
         verbose_name='value used to sort the songs inside this playlist.')
     removable = models.BooleanField(default=True)
     times_played = models.PositiveIntegerField(default=0)
     last_played_at = models.DateTimeField(default=aware_utc_now)
-    # below filed is not updated when calling .update() on other fields
+    # below field is not updated when calling .update() on other fields
     # only auto updated when calling .save()
     last_modified_at = models.DateTimeField(auto_now=True,         
         verbose_name='store the last time when a track was added or removed from this playlist')
@@ -129,8 +133,8 @@ class Playlist(models.Model):
         return self.name + ' by ' + str(self.owner.get().username)
 
 
-def create_fav():
-    return Favourites.objects.create()
+# def create_fav():
+#     return Favourites.objects.create()
 
 # class Favourites(Playlist): pass
 # class Favourites(models.Model):
@@ -144,6 +148,9 @@ class FavouritesTracks(models.Model):
 class Followers(models.Model):
     leader = models.ForeignKey('Userbase', on_delete=models.CASCADE, related_name='followee')
     follower = models.ForeignKey('Userbase', on_delete=models.CASCADE, related_name='follower')
+
+    def __str__(self):
+        return 'Followers <object>'
 
 class UserbasePlaylists(models.Model):
     write = models.BooleanField('whether user can edit playlists or not')
@@ -160,7 +167,6 @@ class TrackPlaylists(models.Model):
 
 class Album(models.Model):
     title = models.CharField(max_length=200)
-    duration = models.PositiveIntegerField('duration of album in secs')
     released_at = models.DateTimeField(null=True)
     album_type = models.CharField('album or single', max_length=10)
     cover_image = models.ImageField(upload_to='album_covers/')
@@ -191,8 +197,6 @@ class Lyrics(models.Model):
 '''
 python manage.py reset_db && python manage.py makemigrations && python manage.py migrate
 
-
-# favs = Favourites.objects.create(name='Favourites', removable=False)
 
 # ======================== CREATE ========================
 
@@ -243,11 +247,11 @@ galantis.followers.add(lekha)
 midnight.followers.add(kells)
 
 # // add albums to DB
-a1 = Album.objects.create(title='BlurryFace', duration=200, released_at=dt, album_type='single', cover_image=pp)
-a2 = Album.objects.create(title='Oh my my', duration=100, released_at=dt, album_type='single', cover_image=pp)
-a3 = Album.objects.create(title='My finest work yet', duration=50, released_at=dt, album_type='single', cover_image=pp)
-a4 = Album.objects.create(title='Naive', duration=60, released_at=dt, album_type='album', cover_image=pp)
-a5 = Album.objects.create(title='Bones', duration=16, released_at=dt, album_type='album', cover_image=pp)
+a1 = Album.objects.create(title='BlurryFace', released_at=dt, album_type='single', cover_image=pp)
+a2 = Album.objects.create(title='Oh my my', released_at=dt, album_type='single', cover_image=pp)
+a3 = Album.objects.create(title='My finest work yet', released_at=dt, album_type='single', cover_image=pp)
+a4 = Album.objects.create(title='Naive', released_at=dt, album_type='album', cover_image=pp)
+a5 = Album.objects.create(title='Bones', released_at=dt, album_type='album', cover_image=pp)
 
 # // add artist(s) to album
 a1.artist.add(pilots)
@@ -282,16 +286,21 @@ catchy.tracks.add(sisyephus, stars, through_defaults={'added_at': dt})
 # // add track to Favourites
 zznix.favourites.add(stars, smth_i_need)
 
+
+
+
+
+
 # ============================== READ ==============================
 
 # // fetch all albums of an artist (using tracks)
-one_r = Artist.objects.get(id=3)
+one_r = Artist.objects.get(id=4)
 # this below can return duplicate entry. cant do .duplicate() on non-postgres
 # hence use python to remove repeated entries
 Album.objects.filter(track__artist__id=one_r.id)
 
 # // fetch all albums of an artist (pure process)
-one_r = Artist.objects.get(id=3)
+one_r = Artist.objects.get(id=4)
 Album.objects.filter(artist__id=one_r.id)
 
 # // fetch all tracks in an album
@@ -306,6 +315,9 @@ deez.tracks.all()
 zznix = Userbase.objects.get(id=1)
 other_playlists = zznix.playlists.all().order_by('-last_played_at')
 own_playlists = Playlist.objects.filter(owner__id=zznix.id).order_by('-last_played_at')
+
+# // fetch followers(users) of a playlist
+Playlist.objects.get(id=1).userbase_set.all()
 
 # // fetch tracks in a playlists with ordering | Recently played
 options_to_fields = {
@@ -341,6 +353,7 @@ Track.objects.filter(artist__gender='female')
 
 # // fetch a followers followings.
 [e.leader.username for e in Followers.objects.filter(follower=lekha.id)]
+lekha.userbase_set.all()
 # ['zznix']
 # means lekha only follows zznix
 
@@ -348,13 +361,101 @@ Track.objects.filter(artist__gender='female')
 zznix.favourites.all()
 FavouritesTracks.objects.filter(user=zznix.id).order_by('-added_at')
 
+# // fetch album duration
+from django.db.models import Sum
+blurry_face = Album.objects.get(id=1)
+blurry_face.track_set.aggregate(album_duration=Sum('duration'))['album_duration']
+
+# // fetch playlist duration
+Playlist.objects.get(id=1).tracks.aggregate(playlist_duration=Sum('duration'))['playlist_duration']
 
 # --- UPDATE --
 
+# // update user info
+Userbase.objects.filter(id=1).update(
+    username='zznixt', password='pass', first_name='Peee', last_name='Poo',
+    description='This is my bio', profile_pic='pp', gender='male', age=21)
+
+# // update artist info
+Artist.objects.filter(id=1).update(
+    username='@twentyonepilots', password='4312' first_name='20+1 ', last_name='pilots',
+    description='Level of convern', profile_pic=pp, gender=None, age=32
+)
+
+# // update playlist info
+Playlist.objects.filter(id=1).update(
+    name='deeznuts', description='gottem', privacy_level='pri', followers=1,
+    sort_by='track_name', times_played=1, last_played_at=dt, last_modified_at=dt,
+)
+
+# // update playlist last modified date (auto_now is only called on .save() no on .update())
+Playlist.objects.filter(id=1).update(last_modified_at=datetime.now(timezone.utc))
+
+# // update playlist last played date (trigger before playing a song from a playlist)
+Playlist.objects.filter(id=1).update(last_played_at=datetime.now(timezone.utc))
+
+# // increment the times_played (only when pressing big play playlist button)
+from django.db.models import F
+Playlist.objects.filter(id=1).update(times_played=F('times_played')+1)
+
+# // update album info
+Album.objects.filter(id=1).update(
+    title='FaceBlurry', genre='pop', explicit=True, cover_image=pp, 
+)
+
+# // update track info
+Track.objects.filter(id=1).update(
+    title='Tear in my <3',  genre='pop', explicit=True, cover_image=pp
+)
+
+# // increment count of song streams
+Track.objects.filter(id=1).update(total_streams=F('total_streams')+1)
 
 
+# ============================= DELETE =============================
+# ============================= DELETE =============================
 
-# --- DELETE ---
+# // remove a track
+Track.objects.get(id=1).delete()
+
+# // remove a track from a playlist
+t1 = Track.objects.get(id=1)
+deez.tracks.remove(t1)
+
+# // remove an album
+Album.objects.get(id=1).delete()
+
+# // remove an artist
+Artist.objects.get(id=4).delete()
+
+# // remove a user (retrieve user's playlists first and delete playlists manually)
+zznix = Userbase.objects.get(id=1)
+own_playlists = zznix.playlists.filter(owner__id)
+own_playlists.delete()
+zznix.delete()
+
+# // remove/unfollow playlist from user library
+lekha = Userbase.objects.get(username='lekha')
+deez = Playlist.objects.get(id=1)
+lekha.playlists.remove(deez)
+
+# // remove playlist
+has_write_permission = UserbasePlaylists.objects.get(id=1).write
+if has_write_permission:
+    deez = Playlist.objects.get(id=1)
+    deez.delete()
+else:
+    print('Cannot delete')
+
+# // unfollow user
+zznix = Userbase.objects.get(id=10)
+kells = Userbase.objects.get(username='kells')
+zznix.followers.remove(kells)
+
+# // unfollow artist
+midnight = Artist.objects.get(id=10)
+kells = Userbase.objects.get(username='kells')
+midnight.followers.remove(kells)
 
 
 '''
