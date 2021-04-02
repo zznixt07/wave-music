@@ -69,7 +69,6 @@ class Profile(models.Model):
     created_at = models.DateTimeField('date when the account was created', default=aware_utc_now)
 
     def __str__(self):
-        # return f'{self.age} {self.gender} followers={self.followers}'
         return f'{self.first_name} {self.last_name}'
 
     # def save(self, *args, **kwargs):
@@ -84,12 +83,10 @@ class Profile(models.Model):
 class Userbase(Profile):
     username = models.CharField(max_length=32, unique=True, null=False, blank=False)
     password = models.CharField(max_length=64)
-    # favourites = models.ForeignKey('Favourites', on_delete=models.CASCADE, related_name='+', default=create_fav)
-    # profile = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='user')
     favourites = models.ManyToManyField('Track', through='FavouritesTracks')
     playlists = models.ManyToManyField('Playlist', through='UserbasePlaylists')
     followers = models.ManyToManyField('self', symmetrical=False, through='Followers',)
-
+        # not symmetrical. If A follows B, then B doesn't neccessarly follows A.
 
 class Adminbase(Profile):
     username = models.CharField(max_length=32, unique=True, null=False, blank=False)
@@ -97,16 +94,8 @@ class Adminbase(Profile):
     level = models.CharField(max_length=1)
     
 class Artist(Userbase):
-    # first_name = models.CharField(max_length=200)
-    # last_name = models.CharField(max_length=200, blank=True, null=False, default='')
-    # description = models.TextField(max_length=2000, blank=True)
-    # profile_pic = models.ImageField(upload_to=f'artist/', blank=True, null=False, default='')
     # secondary_images = models.ImageField(upload_to=f'artist_sec/{self.id}/', blank=True, null=False, default='')
     social_links = models.CharField(max_length=100, null=False, blank=True, default='')
-    # profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
-
-    # def __str__(self):
-    #     return self.first_name +  ' ' +  self.last_name
 
 class Playlist(models.Model):
     name = models.CharField(max_length=100)
@@ -127,18 +116,9 @@ class Playlist(models.Model):
     # cant make owner a OneToOneField because it can be repeated(violates unique constraint)
     owner = models.ManyToManyField('Userbase')
     tracks = models.ManyToManyField('Track', through='TrackPlaylists')
-    # favourites = models.ForeignKey('self', on_delete=models.CASCADE,)
         
     def __str__(self):
         return self.name + ' by ' + str(self.owner.get().username)
-
-
-# def create_fav():
-#     return Favourites.objects.create()
-
-# class Favourites(Playlist): pass
-# class Favourites(models.Model):
-#     tracks = models.ManyToManyField('Track', through='FavouritesTracks')
 
 class FavouritesTracks(models.Model):
     tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
@@ -146,11 +126,19 @@ class FavouritesTracks(models.Model):
     added_at = models.DateTimeField(default=aware_utc_now)
 
 class Followers(models.Model):
-    leader = models.ForeignKey('Userbase', on_delete=models.CASCADE, related_name='followee')
-    follower = models.ForeignKey('Userbase', on_delete=models.CASCADE, related_name='follower')
+    leader = models.ForeignKey(
+        'Userbase',
+        on_delete=models.CASCADE,
+        related_name='as_leader'
+    )
+    follower = models.ForeignKey(
+        'Userbase',
+        on_delete=models.CASCADE,
+        related_name='as_follower'
+    )
 
     def __str__(self):
-        return 'Followers <object>'
+        return f'leader: {self.leader.username} | follower: {self.follower.username}'
 
 class UserbasePlaylists(models.Model):
     write = models.BooleanField('whether user can edit playlists or not')
@@ -198,7 +186,8 @@ class Lyrics(models.Model):
 python manage.py reset_db && python manage.py makemigrations && python manage.py migrate
 
 
-# ======================== CREATE ========================
+# ================================== CREATE ==================================
+# ================================== CREATE ==================================
 
 pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\django_testing_here\\media\\42.jfif"
 
@@ -291,6 +280,35 @@ zznix.favourites.add(stars, smth_i_need)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ============================== READ ==============================
 # ============================== READ ==============================
 
 # // fetch all albums of an artist (using tracks)
@@ -348,12 +366,13 @@ Track.objects.filter(artist__gender='female')
 
 # // fetch a user's followers
 [e.follower.username for e in Followers.objects.filter(leader=lekha.id)]
+[e.follower.username for e in lekha.as_leader.all()]
 # []
 # means lekha has no followers
 
-# // fetch a followers followings.
+# // fetch a user's followings.
 [e.leader.username for e in Followers.objects.filter(follower=lekha.id)]
-lekha.userbase_set.all()
+[e.leader.username for e in lekha.as_follower.all()]
 # ['zznix']
 # means lekha only follows zznix
 
@@ -369,7 +388,10 @@ blurry_face.track_set.aggregate(album_duration=Sum('duration'))['album_duration'
 # // fetch playlist duration
 Playlist.objects.get(id=1).tracks.aggregate(playlist_duration=Sum('duration'))['playlist_duration']
 
-# --- UPDATE --
+
+# ================================== UPDATE ==================================
+# ================================== UPDATE ==================================
+
 
 # // update user info
 Userbase.objects.filter(id=1).update(
@@ -425,8 +447,10 @@ deez.tracks.remove(t1)
 # // remove an album
 Album.objects.get(id=1).delete()
 
-# // remove an artist
-Artist.objects.get(id=4).delete()
+# // remove an artist (doesnt delete artist's album and tracks from db. only unlinks.)
+art = Artist.objects.get(username='@1Rp')
+art.delete()
+((10, {'app1.Followers': 1, 'app1.Album_artist': 3, 'app1.Track_artist': 3, 'app1.Artist': 1, 'app1.Userbase': 1, 'app1.Profile': 1})
 
 # // remove a user (retrieve user's playlists first and delete playlists manually)
 zznix = Userbase.objects.get(id=1)
@@ -440,7 +464,12 @@ deez = Playlist.objects.get(id=1)
 lekha.playlists.remove(deez)
 
 # // remove playlist
-has_write_permission = UserbasePlaylists.objects.get(id=1).write
+# below all do the same
+has_write_permission = kells.userbaseplaylists_set.get(playlists=deez).write
+has_write_permission = deez.userbaseplaylists_set.get(userbase=kells).write
+has_write_permission = UserbasePlaylists.objects.get(playlists=deez, userbase=kells).write
+
+
 if has_write_permission:
     deez = Playlist.objects.get(id=1)
     deez.delete()
@@ -457,6 +486,7 @@ midnight = Artist.objects.get(id=10)
 kells = Userbase.objects.get(username='kells')
 midnight.followers.remove(kells)
 
+# 
 
 '''
 
