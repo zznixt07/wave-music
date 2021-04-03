@@ -30,7 +30,7 @@
         const reusable_html = (i) => `
             <div class="summary-cards">
                 <div class="my-card">
-                    <a href='#'>
+                    <a href='./playlist.html'>
                         <div class="cover">
                         </div>
                         <div class="card-info">
@@ -77,28 +77,64 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 </head>
 <body>
-<div class="browse">
-    <div class="recent-playlists">
-        <h3>Recently Played</h3>
+<div class="main-grid">
+    <aside class="">
+        <div class="logo">
+            <img src="./assets/imgs/logo.svg">
+            <span>Wave</span>
+        </div>
+        <p>Home</p>
+        <p>Search</p>
+        <p>Your library</p>
+        <section class="playlists">
+            <h3>PLAYLISTS</h3>
+            <p>Create playlist</p>
+            <p>Fav songs</p>
+        </section>
+    </aside>
+
+    <div class="content">
+        <header class="sticky-nav">
+            <div class="tabs">
+                <a href="#">Playlists</a>
+                <a href="#">Artists</a>
+                <a href="#">Albums</a>
+            </div>
+            
+            <div class="account-dropdown">
+                <img class="user-profile-pic" src="./assets/imgs/logo.svg">
+                <small class="username">22ioagadggksdghsjkd</small>
+                <span class="">^</span>
+                <a href="#"></a>
+            </div>
+        </header>
+            
+        <div class="browse">
+            <div class="recent-playlists">
+                <h3>Recently Played</h3>
+            </div>
+            <div class="most-played-music">
+                <h3>Top Music</h3>
+            </div>
+            <div class="fav-music">
+                <h3>Your Favourites</h3>
+            </div>
+            <div class="artist-cat">
+                <h3>Discover Artists</h3>
+            </div>
+            <div class="album-cat">
+                <h3>Recommended Albums</h3>
+            </div>
+            <div class="new-releases">
+                <h3>New Releases</h3>
+            </div>
+            <div class="my-playlists">
+                <h3>Your Playlists</h3>
+            </div>
+        </div>
+
     </div>
-    <div class="most-played-music">
-        <h3>Top Music</h3>
-    </div>
-    <div class="fav-music">
-        <h3>Your Favourites</h3>
-    </div>
-    <div class="artist-cat">
-        <h3>Discover Artists</h3>
-    </div>
-    <div class="album-cat">
-        <h3>Recommended Albums</h3>
-    </div>
-    <div class="new-releases">
-        <h3>New Releases</h3>
-    </div>
-    <div class="my-playlists">
-        <h3>Your Playlists</h3>
-    </div>
+
 </div>
 </body>
 </html>

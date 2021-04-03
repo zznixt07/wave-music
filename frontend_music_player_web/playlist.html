@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Playlist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./assets/css/playlist.css">
+    <link rel="stylesheet" href="./assets/css/remixicon/remixicon.css">
+</head>
+<body>
+    <div class="playlist-grid">
+        <header class="playlist-info">
+            <img class="header-img" src="./assets/imgs/3.jfif">
+            <div class="info">
+                <p>PLAYLIST</p>
+                <h1>Top Hits of 2014</h1>
+                <p>Rewind and rediscover big songs from 2015.</p>
+                <p>Spotify 
+                    <ul>
+                        <li>567,598 likes</li>
+                        <li>100 songs, 5 hr 58 min</li>
+                    </ul>
+                </p>
+            </div>
+        </header>
+        <div class="shortcuts">
+            <span>|></span>
+            <span>&lt;3</span>
+            <span>...</span>
+        </div>
+
+        <div class="tracks-list">
+            <ul class="tracks">
+                <li class="header-row">
+                    <span id="track-num">#</span>
+                    <span>Title</span>
+                    <span>Album</span>
+                    <span>Date Added</span>
+                    <span>&nbsp;</span>
+                    <span>Duration</span>
+                </li>
+                <li class="">
+                    <span>1</span>
+                    <div>
+                        <img src="./assets/imgs/8.jfif">
+                        <div>
+                            <span>Heathens</span>
+                            <span><a href="#">Twenty One Pilots</a></span>
+                        </div>
+                    </div>
+                    <span><a href="#">Heathens</a></span>
+                    <span>Mar 30, 2019</span>
+                    <span class="heart ri-heart-3-line"></span>
+                    <span>3:15</span>
+                </li>
+                <li class="">
+                    <span>1</span>
+                    <div>
+                        <img src="./assets/imgs/8.jfif">
+                        <div>
+                            <span>Heathens</span>
+                            <span><a href="#">Twenty One Pilots</a></span>
+                        </div>
+                    </div>
+                    <span><a href="#">Heathens</a></span>
+                    <span>Mar 30, 2019</span>
+                    <span class="heart ri-heart-3-line"></span>
+                    <span>3:15</span>
+                </li>
+                <li class="">
+                    <span>1</span>
+                    <div>
+                        <img src="./assets/imgs/8.jfif">
+                        <div>
+                            <span>Heathens</span>
+                            <span><a href="#">Twenty One Pilots</a></span>
+                        </div>
+                    </div>
+                    <span><a href="#">Heathens</a></span>
+                    <span>Mar 30, 2019</span>
+                    <span class="heart ri-heart-3-line"></span>
+                    <span>3:15</span>
+                </li>
+                <li class="">
+                    <span>1</span>
+                    <div>
+                        <img src="./assets/imgs/8.jfif">
+                        <div>
+                            <span>Heathens</span>
+                            <span><a href="#">Twenty One Pilots</a></span>
+                        </div>
+                    </div>
+                    <span><a href="#">Heathens</a></span>
+                    <span>Mar 30, 2019</span>
+                    <span class="heart ri-heart-3-line"></span>
+                    <span>3:15</span>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function toggleClass(elem, cls1, cls2) {
+            classes = elem.classList
+            if (Array.from(classes).indexOf(cls1) !== -1) {
+                classes.remove(cls1)
+                classes.add(cls2)
+            }
+            // below: using if is different than using else
+            else {
+                classes.remove(cls2)
+                classes.add(cls1)
+            }
+        }
+        const heartAnchors = document.querySelectorAll('.heart')
+        heartAnchors.forEach((heartAnchor) => {
+            heartAnchor.addEventListener('click', () => {
+                toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line')
+            })
+        })
+    </script>
+</body>
+</html>
