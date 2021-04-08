@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        {% block title %}
+            My Custom Site
+        {% endblock title %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/remixicon/remixicon.css' %}">
+    {% block inline_css %} {% endblock inline_css %}
+    {% block external_css %} {% endblock external_css %}
+</head>
+<body>
+    {% block content %}
+        
+    {% endblock content %}
+
+    {% block bottom_js %}
+        
+    {% endblock bottom_js %}
+</body>
+</html>
