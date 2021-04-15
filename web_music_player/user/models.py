@@ -1,58 +1,9 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 from datetime import datetime, timezone
+# from django.utils import timezone
 from PIL import Image
-
-GENDER = [
-    ('', 'Choose..'),
-    ('M', 'Male'),
-    ('F', 'Female'),
-    ('O', 'Other')
-]
-
-HIDE_LEVELS = [
-    ('pub', 'public'),
-    ('pri', 'private'),
-    ('un', 'unlisted')
-]
-
-SORT_BY = [
-    ('artist_name', 'Artist name'),
-    ('album_name', 'Album name'),
-    ('date_added', 'Date added'),
-    ('track_name', 'Track name'),
-    # ('manual', 'custom order')
-]
-
-GENRES = [
-    ('rock', 'Rock'),
-    ('hip hop', 'Hip hop music'),
-    ('jazz', 'Jazz'),
-    ('folk', 'Folk music'),
-    ('pop', 'Pop music'),
-    ('blues', 'Blues'),
-    ('heavy metal', 'Heavy metal'),
-    ('country', 'Country music'),
-    ('classical', 'Classical music'),
-    ('punk rock', 'Punk rock'),
-    ('reggae', 'Reggae'),
-    ('electronic', 'Electronic music'),
-    ('techno', 'Techno'),
-    ('funk', 'Funk'),
-    ('alternative rock', 'Alternative rock'),
-    ('indie rock', 'Indie rock'),
-    ('hardcore', 'Hardcore'),
-    ('ambient', 'Ambient music'),
-    ('hardcore punk', 'Hardcore punk'),
-    ('instrumental', 'Instrumental'),
-    ('orchestra', 'Orchestra'),
-    ('dubstep', 'Dubstep'),
-    ('grunge', 'Grunge'),
-    ('opera', 'Opera'),
-    ('western', 'Western music'),
-    ('progressive rock', 'Progressive rock'),
-    ('other', 'Other')
-]
+from .constants import *
 
 
 def aware_utc_now():
@@ -60,9 +11,13 @@ def aware_utc_now():
 
 
 class Profile(models.Model):
+    username = models.CharField(max_length=32, unique=True, null=False, blank=False)
+    password = models.CharField(max_length=64)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200, blank=True, null=False, default='')
+    email = models.CharField(max_length=200)
     description = models.TextField(max_length=2000, blank=True)
+    country = models.CharField(max_length=50, blank=True, choices=COUNTRIES, default='US')
     profile_pic = models.ImageField(upload_to=f'userbase/', blank=True, null=False, default='')
     gender = models.CharField(max_length=20, choices=GENDER, blank=True, default='', null=False)
     age = models.PositiveSmallIntegerField(validators=[MaxValueValidator(150)], default=None, null=True)
@@ -81,77 +36,18 @@ class Profile(models.Model):
     #         img.save(self.profile_pic.path)
 
 class Userbase(Profile):
-    username = models.CharField(max_length=32, unique=True, null=False, blank=False)
-    password = models.CharField(max_length=64)
+    plan_type = models.CharField(max_length=10, default='free')
     favourites = models.ManyToManyField('Track', through='FavouritesTracks')
     playlists = models.ManyToManyField('Playlist', through='UserbasePlaylists')
     followers = models.ManyToManyField('self', symmetrical=False, through='Followers',)
-        # not symmetrical. If A follows B, then B doesn't neccessarly follows A.
+    # not symmetrical. If A follows B, then B doesn't neccessarly follow A.
 
 class Adminbase(Profile):
-    username = models.CharField(max_length=32, unique=True, null=False, blank=False)
-    password = models.CharField(max_length=64)
     level = models.CharField(max_length=1)
     
 class Artist(Userbase):
     # secondary_images = models.ImageField(upload_to=f'artist_sec/{self.id}/', blank=True, null=False, default='')
     social_links = models.CharField(max_length=100, null=False, blank=True, default='')
-
-class Playlist(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(max_length=2000, blank=True)
-    privacy_level = models.CharField(max_length=3, choices=HIDE_LEVELS, default='pub',
-        verbose_name='restricts other users from viewing this playlist'
-        )
-
-    sort_by = models.CharField(max_length=30, choices=SORT_BY, default='date',
-        verbose_name='value used to sort the songs inside this playlist.')
-    removable = models.BooleanField(default=True)
-    times_played = models.PositiveIntegerField(default=0)
-    last_played_at = models.DateTimeField(default=aware_utc_now)
-    # below field is not updated when calling .update() on other fields
-    # only auto updated when calling .save()
-    last_modified_at = models.DateTimeField(auto_now=True,         
-        verbose_name='store the last time when a track was added or removed from this playlist')
-    # cant make owner a OneToOneField because it can be repeated(violates unique constraint)
-    owner = models.ManyToManyField('Userbase')
-    tracks = models.ManyToManyField('Track', through='TrackPlaylists')
-        
-    def __str__(self):
-        return self.name + ' by ' + str(self.owner.get().username)
-
-class FavouritesTracks(models.Model):
-    tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
-    user = models.ForeignKey('Userbase', on_delete=models.CASCADE)
-    added_at = models.DateTimeField(default=aware_utc_now)
-
-class Followers(models.Model):
-    leader = models.ForeignKey(
-        'Userbase',
-        on_delete=models.CASCADE,
-        related_name='as_leader'
-    )
-    follower = models.ForeignKey(
-        'Userbase',
-        on_delete=models.CASCADE,
-        related_name='as_follower'
-    )
-
-    def __str__(self):
-        return f'leader: {self.leader.username} | follower: {self.follower.username}'
-
-class UserbasePlaylists(models.Model):
-    write = models.BooleanField('whether user can edit playlists or not')
-    userbase = models.ForeignKey('Userbase', on_delete=models.CASCADE)
-    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.userbase.username} | {self.playlists.name}'
-
-class TrackPlaylists(models.Model):
-    track = models.ForeignKey('Track', on_delete=models.CASCADE)
-    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
-    added_at = models.DateTimeField(default=aware_utc_now)
 
 class Album(models.Model):
     title = models.CharField(max_length=200)
@@ -177,6 +73,62 @@ class Track(models.Model):
 
     def __str__(self):
         return self.title
+
+class Playlist(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=2000, blank=True)
+    privacy_level = models.CharField(max_length=3, choices=HIDE_LEVELS, default='pub',
+        verbose_name='restricts other users from viewing this playlist'
+        )
+
+    sort_by = models.CharField(max_length=30, choices=SORT_BY, default='date',
+        verbose_name='value used to sort the songs inside this playlist.')
+    removable = models.BooleanField(default=True)
+    times_played = models.PositiveIntegerField(default=0)
+    last_played_at = models.DateTimeField(default=aware_utc_now)
+    # below field is not updated when calling .update() on other fields
+    # only auto updated when calling .save()
+    last_modified_at = models.DateTimeField(auto_now=True,         
+        verbose_name='store the last time when a track was added or removed from this playlist')
+    # cant make owner a OneToOneField because it can be repeated(violates unique constraint)
+    owner = models.ManyToManyField('Userbase')
+    tracks = models.ManyToManyField('Track', through='TrackPlaylists')
+        
+    def __str__(self):
+        return self.name + ' by ' + str(self.owner.get().username)
+
+class Followers(models.Model):
+    leader = models.ForeignKey(
+        'Userbase',
+        on_delete=models.CASCADE,
+        related_name='as_leader'
+    )
+    follower = models.ForeignKey(
+        'Userbase',
+        on_delete=models.CASCADE,
+        related_name='as_follower'
+    )
+
+    def __str__(self):
+        return f'leader: {self.leader.username} | follower: {self.follower.username}'
+
+class UserbasePlaylists(models.Model):
+    write = models.BooleanField('whether user can edit playlists or not')
+    userbase = models.ForeignKey('Userbase', on_delete=models.CASCADE)
+    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.userbase.username} | {self.playlists.name}'
+
+class FavouritesTracks(models.Model):
+    tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
+    user = models.ForeignKey('Userbase', on_delete=models.CASCADE)
+    added_at = models.DateTimeField(default=aware_utc_now)
+
+class TrackPlaylists(models.Model):
+    track = models.ForeignKey('Track', on_delete=models.CASCADE)
+    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
+    added_at = models.DateTimeField(default=aware_utc_now)
 
 
 class Lyrics(models.Model):

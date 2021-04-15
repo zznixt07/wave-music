@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Signup - My Site
+    Login - My Site
 {% endblock title %}
 
 {% block inline_css %}
@@ -26,9 +26,9 @@
                 {% comment %}{{ form.as_p }}{% endcomment %}
                 
                 <div class="text-center starting-info">
-                    <h2>Hello! Signup</h2>
+                    <h2>Login</h2>
                     <p>
-                        Have an account? <a href="{% url 'account:login' %}">Log in</a>
+                        Not Registered Yet? <a href="{% url 'account:signup' %}">Sign Up</a>
                     </p>
                 </div>
                 <ul>
@@ -51,54 +51,19 @@
                         <div>
                         <small>{{ form.password.errors }}</small>
                     </li>
-                    <li>
-                        <div class="group-col">
-                            <div>
-                                {{ form.first_name.label_tag }}
-                                {{ form.first_name }} 
-                                <small>{{ form.first_name.errors }}</small>
-                            </div>
-                            <div>
-                                {{ form.last_name.label_tag }}
-                                {{ form.last_name }} 
-                                <small>{{ form.last_name.errors }}</small>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div>
-                            {{ form.country.label_tag }}
-                            {{ form.country }} 
-                            <small>{{ form.country.errors }}</small>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="group-col">
-                            <div>
-                                {{ form.gender.label_tag }}
-                                {{ form.gender }} 
-                                <small>{{ form.gender.errors }}</small>
-                            </div>
-                            <div>
-                                {{ form.age.label_tag }}
-                                {{ form.age }} 
-                                <small>{{ form.age.errors }}</small>
-                            </div>
-                        </div>
-                    </li>
+                    
                     <li id="chkbox">
-                        {{ form.accept_t_and_c.label_tag }}Accept <a href="#">terms and conditions</a>
-                        {{ form.accept_t_and_c }}
-                        <small>{{ form.accept_t_and_c.errors }}</small>
-                            
+                        {{ form.remember_me.label_tag }}
+                        {{ form.remember_me }}
+                        <small>{{ form.remember_me.errors }}</small>
                     </li>
                     <li class="submit-btn">
-                        <input type="submit" value="Register">
+                        <input type="submit" value="Login">
                     </li>
                 </ul>
             </form>
             <div class="half-side-image">
-                <img src="{% static 'account/imgs/4.jpg' %}">
+                <img src="{% static 'account/imgs/3.jpg' %}">
             </div>
         </section>
     </div>

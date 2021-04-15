@@ -17,3 +17,17 @@ class UserSignupForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'placeholder': 'First Name'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Last Name'}),
         }
+
+class UserLoginForm(forms.ModelForm):
+    remember_me = forms.BooleanField(label='Remember Me',required=True)
+    
+    class Meta:
+        model = Profile
+        fields = ['username', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'placeholder': 'Username'}),
+            'password': forms.TextInput(attrs={
+                'placeholder': 'Password', 'type': 'password'}),
+        }
+
+
