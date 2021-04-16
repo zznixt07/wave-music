@@ -3,6 +3,7 @@ from user.models import Userbase, Profile
 
 class UserSignupForm(forms.ModelForm):
     accept_t_and_c = forms.BooleanField(label='',required=True)
+
     class Meta:
         model = Profile
         fields = [

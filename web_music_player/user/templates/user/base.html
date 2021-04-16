@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block inline_css %}
+    <style >
+        
+    </style>
+{% endblock inline_css %}
+
+
+{% block content %}
+
+    <div class="main">
+        <div class="iframe-browse">
+            {% block iframe %} {% endblock iframe %}
+        </div>
+        
+        <div class="music-controller">
+
+            <button id="button" class="rythm-bass">Add 1 new song</button>
+            <div id="3rd-p-player"></div>
+        </div>
+
+    </div>
+
+{% endblock content %}
+

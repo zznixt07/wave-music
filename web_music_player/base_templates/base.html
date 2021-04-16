@@ -4,21 +4,26 @@
 <head>
     <title>
         {% block title %}
-            My Custom Site
+            Wave
         {% endblock title %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/remixicon/remixicon.css' %}">
-    {% block inline_css %} {% endblock inline_css %}
-    {% block external_css %} {% endblock external_css %}
-</head>
-<body>
-    {% block content %}
-        
-    {% endblock content %}
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 
-    {% block bottom_js %}
+    {% block inline_css %} {% endblock inline_css %}
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/remixicon/remixicon.css' %}">
+    
+    {% block external_css %} {% endblock external_css %}
         
-    {% endblock bottom_js %}
+    {% block top_js %} {% endblock top_js %}
+</head>
+
+<body>
+    {% block content %} {% endblock content %}
+
+    {% block bottom_js %} {% endblock bottom_js %}
 </body>
 </html>

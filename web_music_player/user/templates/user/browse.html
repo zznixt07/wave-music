@@ -1,0 +1,149 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block inline_css %}
+    <style >
+        
+    </style>
+{% endblock inline_css %}
+
+{% block external_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
+{% endblock external_css %}
+
+{% block top_js %}
+    <script type="module">
+        function randomInt(min, max) {
+            // [min-max)
+            return Math.floor(Math.random() * (max - min)) + min
+        }
+
+        const sections = document.querySelectorAll('.browse > *')
+        const reusable_html = (i) => `
+            <div class="summary-cards">
+                <div class="my-card">
+                    <a href='./playlist.html'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
+                </div>
+               <div class="my-card">
+                    <a href='#'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
+                </div>
+               <div class="my-card">
+                    <a href='#'>
+                        <div class="cover">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="title">Just try to forget these songs. We dare you</h4>
+                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
+                        </div>
+                    </a>
+                </div>
+               
+                          
+                
+            </div>`
+        for (let section of sections) {
+            section.insertAdjacentHTML('beforeend', reusable_html(randomInt(1, 41)))
+        }
+        const cards = document.querySelectorAll('.my-card .cover')
+        for (let card of cards) {
+            const img = new Image();
+            // img.src = `./assets/imgs/${randomInt(1, 41)}.jfif`
+            img.src = `/static/user/imgs/${randomInt(1, 41)}.jfif`
+            card.appendChild(img)
+        }
+
+    </script>
+{% endblock top_js %}
+
+{% block content %}
+    
+    <div class="main-grid">
+        <aside class="">
+            <div class="logo">
+                <img src="{% static 'user/imgs/logo.svg' %}">
+                <span>Wave</span>
+            </div>
+            <p>Home</p>
+            <p>Search</p>
+            <p>Your library</p>
+            <section class="playlists">
+                <h3>PLAYLISTS</h3>
+                <p>Create playlist</p>
+                <p>Fav songs</p>
+            </section>
+        </aside>
+
+        <div class="content">
+            <header class="sticky-nav">
+                <div class="tabs">
+                    <a href="#">Playlists</a>
+                    <a href="#">Artists</a>
+                    <a href="#">Albums</a>
+                </div>
+                
+                <div class="account-dropdown">
+                    <img class="user-profile-pic" src="{% static 'user/imgs/logo.svg' %}">
+                    <small class="username">22ioagadggksdghsjkd</small>
+                    <span class="">^</span>
+                    <a href="#"></a>
+                </div>
+            </header>
+                
+            <div class="browse">
+                <div class="recent-playlists">
+                    <h3>Recently Played</h3>
+                </div>
+                <div class="most-played-music">
+                    <h3>Top Music</h3>
+                </div>
+                <div class="fav-music">
+                    <h3>Your Favourites</h3>
+                </div>
+                <div class="artist-cat">
+                    <h3>Discover Artists</h3>
+                </div>
+                <div class="album-cat">
+                    <h3>Recommended Albums</h3>
+                </div>
+                <div class="new-releases">
+                    <h3>New Releases</h3>
+                </div>
+                <div class="my-playlists">
+                    <h3>Your Playlists</h3>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock content %}
+
+{% block bottom_js %}
+    <script>
+        document.addEventListener('click', () => {
+            window.parent.postMessage({
+                type: 'addSongToPlaylist',
+                song: {id: 1}
+            }, 'http://127.0.0.1:8000')
+        })
+        window.addEventListener('message', (event) => {
+            if (event.origin !== 'http://127.0.0.1:8000') return
+            console.log('data from parent window :', event.data)
+        })
+    </script>
+{% endblock bottom_js %}

@@ -1,0 +1,41 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block inline_css %}
+    <style >
+        
+    </style>
+{% endblock inline_css %}
+
+{% block external_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/APlayer.min.css' %}">
+    <script src="{% static 'user/js/APlayer.min.js' %}"></script>
+{% endblock external_css %}
+
+{% block top_js %}
+    <script type="module" src="{% static 'user/js/player.js' %}"></script>
+{% endblock top_js %}
+
+
+{% block iframe %}
+    <iframe src="{% url 'user:browse' %}"></iframe>
+{% endblock iframe %}
+
+
+{% block bottom_js %}
+    <script type="text/javascript" src="{% static 'user/js/rythm.js' %}"></script>
+    <script>
+        window.addEventListener('message', (event) => {
+            if (event.origin !== 'http://127.0.0.1:8000') return
+            if (event.data.type === 'ACK') return
+            console.log("data from iframe :", event.data)
+            event.source.postMessage({
+                type: 'ACK',
+                recieved: event.data,
+            }, event.origin)
+        })
+        // (document.querySelector('iframe'))
+        
+    </script>
+{% endblock bottom_js %}
