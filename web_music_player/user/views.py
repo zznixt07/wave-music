@@ -19,3 +19,10 @@ def browse(request):
     resp = render(request, 'user/browse.html', context=context)
     resp["X-Frame-Options"] = 'SAMEORIGIN'
     return resp
+
+def playlist(request):
+    context = {}
+    resp = render(request, 'user/playlist.html', context=context)
+    resp["X-Frame-Options"] = 'SAMEORIGIN'
+    return resp
+

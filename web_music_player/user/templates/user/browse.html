@@ -1,6 +1,11 @@
 {% extends 'user/base.html' %}
 {% load static %}
 
+{% block title %}
+    Browse - Wave
+{% endblock title %}
+
+
 {% block inline_css %}
     <style >
         
@@ -22,7 +27,7 @@
         const reusable_html = (i) => `
             <div class="summary-cards">
                 <div class="my-card">
-                    <a href='./playlist.html'>
+                    <a href='/playlist'>
                         <div class="cover">
                         </div>
                         <div class="card-info">
@@ -137,7 +142,7 @@
     <script>
         document.addEventListener('click', () => {
             window.parent.postMessage({
-                type: 'addSongToPlaylist',
+                type: 'addTrackToPlaylist',
                 song: {id: 1}
             }, 'http://127.0.0.1:8000')
         })

@@ -1,0 +1,108 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block title %}
+    Playlist - Wave
+{% endblock title %}
+
+{% block inline_css %}
+    <style >
+        
+    </style>
+{% endblock inline_css %}
+
+{% block external_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/playlist.css' %}">
+{% endblock external_css %}
+
+{% block content %}
+    <div class="playlist-grid">
+        <header class="playlist-info">
+            <img class="header-img" src="{% static 'user/imgs/3.jfif' %}">
+            <div class="info">
+                <p>PLAYLIST</p>
+                <h1>Top Hits of 2014</h1>
+                <p>Rewind and rediscover big songs from 2015.</p>
+                <p>Spotify 
+                    <ul>
+                        <li>567,598 likes</li>
+                        <li>100 songs, 5 hr 58 min</li>
+                    </ul>
+                </p>
+            </div>
+        </header>
+        <div class="shortcuts">
+            <span>|></span>
+            <span>&lt;3</span>
+            <span>...</span>
+        </div>
+
+        <div class="tracks-list">
+            <ul class="tracks">
+                <li class="header-row">
+                    <span id="track-num">#</span>
+                    <span>Title</span>
+                    <span>&nbsp;</span>
+                    <span>&nbsp;</span>
+                    <span>Album</span>
+                    <span>Date Added</span>
+                    <span>&nbsp;</span>
+                    <span>Duration</span>
+                </li>
+                <li class="">
+                    <div class="index">
+                        <span>1</span>
+                        <i class="hover btn play-this ri-play-circle-fill"></i>
+                    </div>
+                    <div class="track-artist">
+                        <img src="{% static 'user/imgs/8.jfif' %}">
+                        <div class="">
+                            <span>Heathens</span>
+                            <span><a href="#">Twenty One Pilots</a></span>
+                        </div>
+                    </div>
+                    <span class="hidden btn ri-add-line" title="Add to Queue"></span>
+                    <span class="hidden btn ri-play-list-add-line" title="Add to Playlist"></span>
+                    <span aria-label="album"><a href="#">Heathens</a></span>
+                    <span aria-label="date-added">Mar 30, 2019</span>
+                    <span class="heart ri-heart-3-line"></span>
+                    <span aria-label="duration">3:15</span>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block bottom_js %}
+    <script type="text/javascript">
+        function toggleClass(elem, cls1, cls2) {
+            classes = elem.classList
+            if (Array.from(classes).indexOf(cls1) !== -1) {
+                classes.remove(cls1)
+                classes.add(cls2)
+            }
+            // below:: using if is different than using else
+            else {
+                classes.remove(cls2)
+                classes.add(cls1)
+            }
+        }
+        const heartAnchors = document.querySelectorAll('.heart')
+        heartAnchors.forEach((heartAnchor) => {
+            heartAnchor.addEventListener('click', () => {
+                toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line')
+            })
+        })
+        const playBtns = document.querySelectorAll('.play-this')
+        playBtns.forEach((playBtn) => {
+            playBtn.addEventListener('click', () => {
+                window.parent.postMessage({
+                    type: 'playTrack',
+                    song: {id: 1}
+            }, 'http://127.0.0.1:8000')
+            })
+        })
+
+    </script>
+{% endblock bottom_js %}

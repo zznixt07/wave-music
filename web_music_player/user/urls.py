@@ -5,4 +5,5 @@ app_name = 'site_user'
 urlpatterns = [
     path('', views.index, name='index'),
     path('browse/', views.browse, name='browse'),
+    path('playlist/', views.playlist, name='playlist'),
 ]

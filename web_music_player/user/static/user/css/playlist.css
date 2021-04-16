@@ -38,18 +38,6 @@ body {
     background-color: var(--primary-color);
 }
 
-
-/*.playlist-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 
-    grid-template-areas: 
-        "info"
-        "tracks"
-}*/
-
-
-
 header {
     height: 50%;
 }
@@ -63,20 +51,13 @@ header {
 
 }
 
-/*.header-row {
-    display: grid;
-    grid-template-columns: 1fr 7fr 6fr 5fr 4fr;
-    grid-template-rows: 1fr;
-    gap: 0.5rem;
-}
-*/
 #track-num {
     justify-self: flex-end;
 }
 
 .tracks li, .header-row {
     display: grid;
-    grid-template-columns: 1fr 7fr 6fr 5fr 1fr 4fr;
+    grid-template-columns: 1fr 7fr 1fr 1fr 6fr 5fr 1fr 4fr;
     grid-template-rows: 1fr;
     column-gap: 0.5rem;
     padding: 0.3rem 0;
@@ -84,14 +65,30 @@ header {
 }
 
 /*center the first column*/
-.tracks li > span:first-child {
+.tracks li .index, .hidden {
     justify-self: center;
-    /*align-self: center;*/
 }
 
-.tracks li:hover {
-    background-color: var(--hover-bg-color);
+.hover {display: none;}
+.hover:hover {
+    background-color: var(--secondary-color);
+    border-radius: 50%;
 }
+.hidden {
+    visibility: hidden;
+    padding: 0.3rem;
+}
+.hidden:hover {
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+}
+.tracks li:hover {background-color: var(--hover-bg-color);}
+.tracks li:hover .index span {display: none;}
+.tracks li:hover .hover {display: initial;}
+.tracks li:hover .hidden {visibility: visible;}
+
+.btn {cursor: pointer;}
+.play-this {font-size: 230%;}
 
 .tracks img {
     width: 50px;
@@ -101,11 +98,14 @@ header {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr;
-
 }
 
-.tracks div div {
+.track-artist div {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
+}
+
+.heart {
+    cursor: pointer;
 }
