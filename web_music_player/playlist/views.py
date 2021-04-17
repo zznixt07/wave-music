@@ -14,45 +14,90 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 # @login_required
-def add_to_playlist(request):
+def update_playlist(request):
+    data = json.loads(request.body.decode('utf-8'))
+    now = datetime.now(timezone.utc)
+    playlist = Playlist.objects.get(id=data['playlist_id'])
+    track = Track.objects.get(id=data['track_id'])
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        now = datetime.now(timezone.utc)
-        playlist = Playlist.objects.get(id=data['playlist_id'])
-        track = Track.objects.get(id=data['track_id'])
         playlist.tracks.add(track, through_defaults={'added_at': now})
-    
-        response = JsonResponse({
-            'playlist': playlist.name,
-            'track': track.title,
-            'success': True
-        })
-        return response
+        info = {'added': True}
+    elif request.method == 'DELETE':    
+        playlist.tracks.remove(track)
+        info = {'removed': True}
     else:
         return 'HTTPNotAllowed'
+
+    return JsonResponse(
+        {**{'playlist': curr_user.get_full_name() + "'s Favourites",
+            'track': track.title,
+            'success': True},
+        **info}
+    )
+
+
+@login_required
+def update_favourites(request):
+    data = json.loads(request.body.decode('utf-8'))
+    curr_user = Userbase.objects.get(username=request.user.username)
+    now = datetime.now(timezone.utc)
+    track = Track.objects.get(id=data['track_id'])
+    if request.method == 'POST':
+        curr_user.favourites.add(track, through_defaults={'added_at': now})
+        info = {'added': True}
+    elif request.method == 'DELETE':
+        curr_user.favourites.remove(track)
+        info = {'removed': True}
+    else:
+        return 'HTTPNotAllowed'
+    return JsonResponse(
+        {**{'playlist': curr_user.get_full_name() + "'s Favourites",
+            'track': track.title,
+            'success': True},
+        **info}
+    )
+
 
 # @login_required
 def index(request):    
     "changing header is tricky when using generic views"
+    data = json.loads(request.body.decode('utf-8'))
+    now = datetime.now(timezone.utc)
+    playlist = Playlist.objects.get(id=data['playlist_id'])
+    track = Track.objects.get(id=data['track_id'])
 
-    if request.method == 'GET':
-        # user = request.user
-        user = Userbase.objects.get(username='zznix')
-        other_playlists = user.playlists.all().order_by('-last_played_at')
+    if request.method == 'POST':
+        playlist.tracks.add(track, through_defaults={'added_at': now})
+        info = {'added': True}
+    elif request.method == 'DELETE':    
+        playlist.tracks.remove(track)
+        info = {'removed': True}
+    
+    elif request.method == 'GET':
+        curr_user = Userbase.objects.get(username=request.user.username)
+        other_playlists = curr_user.playlists.all().order_by('-last_played_at')
         own_playlists = Playlist.objects \
-                            .filter(owner__id=user.id) \
+                            .filter(owner__id=curr_user.id) \
                             .order_by('-last_played_at')
 
-        playlists = list(own_playlists) + list(other_playlists)
-        # form = ViewPlaylistForm()
+        user_playlists = list(own_playlists) + list(other_playlists)
+        current_playlist = Playlist.objects.get(id=1)
         context = {
-            # 'form': form,
-            'playlists': playlists,
+            'current_playlist': current_playlist,
+            'curr_user': curr_user,
+            'playlists': user_playlists,
         }
         resp = render(request, 'user/playlist.html', context=context)
         resp["X-Frame-Options"] = 'SAMEORIGIN'
+        return resp
     else:
-        pass
+        return 'HTTPNotAllowed'
 
-    return resp
+    return JsonResponse(
+        {**{'playlist': curr_user.get_full_name() + "'s Favourites",
+            'track': track.title,
+            'success': True},
+        **info}
+    )
+
 

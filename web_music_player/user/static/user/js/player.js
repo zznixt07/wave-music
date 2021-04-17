@@ -6,8 +6,9 @@
 // rythm.setMusic('user/audio/1.mp3')
 // rythm.start()
 
-const ap = new APlayer({
-    container: document.getElementById('3rd-p-player'),
+const container = document.getElementById('3rd-p-player')
+let player = new APlayer({
+    container: container,
     listFolded: false,
     listMaxHeight: 90,
     audio: [
@@ -32,23 +33,15 @@ document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
 const playPauseBtn = document.querySelector('.play-or-pause-track')
 let paused = true
 playPauseBtn.addEventListener('click', function () {
-    if (paused) {
-        ap.play()
-        paused = false
-    }
-    else {
-        ap.pause()
-        paused = true
-    }
-
+    player.toggle()
 })
 
-ap.on('play', function () {
+player.on('play', function () {
     playPauseBtn.classList.remove('ri-play-circle-fill')
     playPauseBtn.classList.add('ri-pause-circle-fill')
 })
 
-ap.on('pause', function () {
+player.on('pause', function () {
     playPauseBtn.classList.remove('ri-pause-circle-fill')
     playPauseBtn.classList.add('ri-play-circle-fill')  
 })
@@ -56,11 +49,57 @@ ap.on('pause', function () {
 
 const btn = document.getElementById('button')
 btn.addEventListener('click', function () {
-    ap.list.add([
+    player.list.add([
         {
             name: 'walking on the moon',
             artist: 'Computer Glitch',
             url: '/static/user/audio/walking.webm',
         },
     ]);
+})
+
+async function getTrack(id) {
+    return (
+        await fetch('track/getTrack/' + id, {
+            method: 'GET',
+            }).then(resp => resp.json())
+                .then(data => data)
+                    .catch(err => console.log(err))
+    )
+}
+
+function playTrack(track) {
+    player = new APlayer({
+        container: container,
+        listFolded: false,
+        listMaxHeight: 90,
+        audio: [
+            {
+                name: track.title,
+                artist: Object.values(track.artists[0])[0],
+                url: 'media/' + track.audio_url,
+                cover: 'media/' + track.image_url,
+            },
+        ],
+    })
+    player.play()
+}
+
+// listen messages from iframe
+window.addEventListener('message', async (event) => {
+    if (event.origin !== 'http://127.0.0.1:8000') return
+    const data = event.data
+    if (data.type === 'ACK') return
+
+    console.log("data from iframe :", data)
+    event.source.postMessage({
+        type: 'ACK',
+        recieved: data,
+    }, event.origin)
+
+    if (data.type === 'playTrack') {
+        const trackDetails = await getTrack(data.track.id)
+        console.log(trackDetails)
+        playTrack(trackDetails)
+    }
 })

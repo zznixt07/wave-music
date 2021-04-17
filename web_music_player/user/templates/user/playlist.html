@@ -1,5 +1,6 @@
 {% extends 'user/base.html' %}
 {% load static %}
+{% load sec_to_hhmmss %}
 
 {% block title %}
     Playlist - Wave
@@ -62,26 +63,35 @@
                     <span>&nbsp;</span>
                     <span>Duration</span>
                 </li>
-                <li class="" data-track-id="1">
-                    <div class="index">
-                        <span>1</span>
-                        <i class="hover btn play-this ri-play-circle-fill"></i>
-                    </div>
-                    <div class="track-artist">
-                        <img src="{% static 'user/imgs/8.jfif' %}">
-                        <div class="">
-                            <span>Heathens</span>
-                            <span><a href="#">Twenty One Pilots</a></span>
+                {% for track in current_playlist.tracks.all %}
+                    <li class="" data-track-id="{{ track.id }}">
+                        <div class="index">
+                            <span>{{ track.id }}</span>
+                            <i class="hover btn play-this ri-play-circle-fill"></i>
                         </div>
-                    </div>
-                    <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
-                    <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
-                    <span aria-label="album"><a href="#">Heathens</a></span>
-                    <span aria-label="date-added">Mar 30, 2019</span>
-                    <span class="heart ri-heart-3-line"></span>
-                    <span aria-label="duration">3:15</span>
-                </li>
+                        <div class="track-artist">
+                            
+                            {% with main_artist=track.artist.all|first %}
+                                <img src="{{ main_artist.profile_pic.url }}">
+                                <div class="">
+                                    <span>{{ track.title }}</span>
+                                    <span><a href="#">{{ main_artist.get_full_name }}</a></span>
+                                </div>
+                            {% endwith %}
+                        </div>
+                        <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
+                        <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
+                        <span aria-label="album"><a href="#">{{ track.album.title }}</a></span>
+                        <span aria-label="date-added">{{ track.created_at|date:"M d, Y" }}</span>
+                        {% if track in curr_user.favourites.all %}
+                            <span class="heart ri-heart-3-fill"></span>
+                        {% else %}
+                            <span class="heart ri-heart-3-line"></span>
+                        {% endif %}
+                        <span aria-label="duration">{{ track.duration|sec_to_hhmmss }}</span>
+                    </li>
                 
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -89,68 +99,114 @@
 
 {% block bottom_js %}
     <script type="text/javascript">
-        // const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value
+        // returns the class added
         function toggleClass(elem, cls1, cls2) {
             classes = elem.classList
             if (Array.from(classes).indexOf(cls1) !== -1) {
                 classes.remove(cls1)
                 classes.add(cls2)
+                return cls2
             }
             // below:: using if is different than using else
             else {
                 classes.remove(cls2)
                 classes.add(cls1)
+                return cls1
             }
         }
 
-
-        const playlistForm = document.querySelector('.playlist-add')
-        // playlistForm.style.display = 'none';
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
         const closeForm = () => {
             playlistForm.classList.add('display-none')
         }
-        const closeListPlaylistsBtn = document.querySelector('.close-btn')
-        closeListPlaylistsBtn.addEventListener('click', closeForm)
-        playlistForm.addEventListener('click', closeForm)
 
+        let SELECTED_SONG;
+        // const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value
+        const playlistForm = document.querySelector('.playlist-add')
+        // playlistForm.style.display = 'none';
+
+
+        // show list of playlist to add to after clicking add to playlist button
         const addToPlaylistBtns = document.querySelectorAll('.playlist-this')
         addToPlaylistBtns.forEach((playlistBtn) => {
             playlistBtn.addEventListener('click', () => {
                 playlistForm.classList.remove('display-none')
+                SELECTED_SONG = playlistBtn.parentElement.dataset.trackId
             })
         })
+        
+        // close the dialog showing a list of playlist.
+        const closeListPlaylistsBtn = document.querySelector('.close-btn')
+        closeListPlaylistsBtn.addEventListener('click', closeForm)
+        playlistForm.addEventListener('click', closeForm)
 
+        // add a song to playlist after choosing the playlist
         const playlistElems = document.querySelectorAll('.add-to-playlist p')
         playlistElems.forEach((pl) => {
             pl.addEventListener('click', () => {
                 const playlistId = pl.dataset.playlistId
-                fetch('http://127.0.0.1:8000/playlist/addToPlaylist/', {
+                fetch('/', {
                     method: 'POST',
-                    body: JSON.stringify({playlist_id: 1, track_id: 1}),
+                    body: JSON.stringify({
+                        playlist_id: playlistId,
+                        track_id: SELECTED_SONG
+                    }),
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),
                         'Content-Type': 'application/json'
                     },
-                }).then(resp => resp.text())
-                    .then(data => data)
-                    .catch(err => console.log(err))
+                }).then(resp => resp.json())
+                    .then(data => console.log(data))
+                        .catch(err => console.log(err))
             })
         })
 
+        // toggle heart state and store track in favourites
         const heartAnchors = document.querySelectorAll('.heart')
         heartAnchors.forEach((heartAnchor) => {
             heartAnchor.addEventListener('click', () => {
-                toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line')
+                let method = 'POST'
+                if (toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line') === 'ri-heart-3-line') {
+                    method = 'DELETE'
+                }
+                fetch('favourites/', {
+                    method: method,
+                    body: JSON.stringify({
+                        track_id: heartAnchor.parentElement.dataset.trackId
+                    }),
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                }).then(resp => resp.json())
+                    .then(data => console.log(data))
+                        .catch(err => console.log(err))
             })
         })
 
+        // play this track
         const playBtns = document.querySelectorAll('.play-this')
         playBtns.forEach((playBtn) => {
             playBtn.addEventListener('click', () => {
+                const trackId = parseInt(playBtn.parentElement.parentElement.dataset.trackId, 10)
                 window.parent.postMessage({
                     type: 'playTrack',
-                    song: {id: 1}
+                    track: {id: trackId}
                 }, 'http://127.0.0.1:8000')
             })
         })

@@ -1,6 +1,8 @@
+import os
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.core.files import File
 from datetime import datetime, timezone
 # from django.utils import timezone
 from PIL import Image
@@ -9,7 +11,6 @@ from .constants import *
 
 def aware_utc_now():
     return datetime.now(timezone.utc)
-
 
 # class Profile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -24,14 +25,22 @@ class Profile(User):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # print(repr(self.profile_pic.path))
+        with open(self.profile_pic.path, 'rb') as file:
+            self.profile_pic.save(
+                os.path.basename(self.profile_pic.path),
+                File(file),
+                save=False,
+            )
+        super().save(*args, **kwargs)
 
-    #     img = Image.open(self.profile_pic.path)
-    #     if img.height > 300 or img.width > 300:
-    #         output_size = (300, 300)
-    #         img.thumbnail(output_size)
-    #         img.save(self.profile_pic.path)
+
+        # img = Image.open(self.profile_pic.path)
+        # if img.height > 300 or img.width > 300:
+        #     output_size = (300, 300)
+        #     img.thumbnail(output_size)
+        #     img.save(self.profile_pic.path)
 
 class Userbase(Profile):
     plan_type = models.CharField(max_length=10, default='free')
@@ -57,6 +66,16 @@ class Album(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        with open(self.cover_image.path, 'rb') as file:
+            self.cover_image.save(
+                os.path.basename(self.cover_image.path),
+                File(file),
+                save=False,
+            )
+        super().save(*args, **kwargs)
+
+
 class Track(models.Model):
     title = models.CharField(max_length=200)
     genre = models.CharField(max_length=50, choices=GENRES, default='other')
@@ -66,11 +85,28 @@ class Track(models.Model):
     created_at = models.DateTimeField('date when the track was uploaded', default=aware_utc_now)
     total_streams = models.PositiveIntegerField()
     cover_image = models.ImageField(upload_to='track_covers/')
+    location = models.FileField(upload_to='track_audio/')
     album = models.ForeignKey('Album', on_delete=models.CASCADE, blank=False, null=True)
     artist = models.ManyToManyField('Artist')
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        with open(self.cover_image.path, 'rb') as file:
+            self.cover_image.save(
+                os.path.basename(self.cover_image.path),
+                File(file),
+                save=False,
+            )
+        with open(self.location.path, 'rb') as file:
+            self.location.save(
+                os.path.basename(self.location.path),
+                File(file),
+                save=False,
+            )
+        super().save(*args, **kwargs)
+
 
 class Playlist(models.Model):
     name = models.CharField(max_length=100)
@@ -120,17 +156,17 @@ class UserbasePlaylists(models.Model):
 
 class FavouritesTracks(models.Model):
     tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
-    user = models.ForeignKey('Userbase', on_delete=models.CASCADE)
     added_at = models.DateTimeField(default=aware_utc_now)
+    user = models.ForeignKey('Userbase', on_delete=models.CASCADE)
 
 class TrackPlaylists(models.Model):
-    track = models.ForeignKey('Track', on_delete=models.CASCADE)
-    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
+    tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
     added_at = models.DateTimeField(default=aware_utc_now)
+    playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
 
 
-class Lyrics(models.Model):
-    content = models.FileField(upload_to='lyrics/')
+# class Lyrics(models.Model):
+#     content = models.FileField(upload_to='lyrics/')
 
 '''
 python manage.py reset_db && python manage.py makemigrations && python manage.py migrate
@@ -139,7 +175,12 @@ python manage.py reset_db && python manage.py makemigrations && python manage.py
 # ================================== CREATE ==================================
 # ================================== CREATE ==================================
 
-pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\django_testing_here\\media\\42.jfif"
+
+from datetime import datetime, timezone
+dt = datetime.now(timezone.utc)
+
+pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\web_app\\web_music_player\\media\\15.jfif"
+tp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\web_app\\web_music_player\\media\\walking.webm"
 
 # // create user in DB
 zznix = Userbase.objects.create_user(first_name='Nisan', last_name='Thapa', gender='male', age=20, profile_pic=pp, username='zznix', password='1234')
@@ -164,10 +205,6 @@ nword.owner.add(zznix)
 lekha.playlists.add(deez, through_defaults={'write': True})
 kells.playlists.add(deez, through_defaults={'write': False})
 zznix.playlists.add(catchy, through_defaults={'write': False})
-
-from datetime import datetime, timezone
-dt = datetime.now(timezone.utc)
-pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\django_testing_here\\media\\78.jfif"
 
 # // add artists to DB
 pilots = Artist.objects.create_user(first_name='21 Pilots', profile_pic=pp, username='21p', password='00',)
@@ -200,12 +237,12 @@ a4.artist.add(one_r)
 a5.artist.add(one_r, galantis)
 
 # // add tracks to DB (album is optional)
-tear = Track.objects.create(title='Tear in my heart', album=a1, genre='rock', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp)
-stars = Track.objects.create(title='Counting Stars', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp)
-sisyephus = Track.objects.create(title='Sisyephus', album=a3, genre='', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp)
-bones = Track.objects.create(title='Bones', album=a5, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp)
-stressed_out = Track.objects.create(title='Stressed Out', album=a1, genre='rock', released_at=dt, duration=5, explicit=False, created_at=dt, total_streams=100, cover_image=pp)
-smth_i_need = Track.objects.create(title='Something I need', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp)
+tear = Track.objects.create(title='Tear in my heart', album=a1, genre='rock', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
+stars = Track.objects.create(title='Counting Stars', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
+sisyephus = Track.objects.create(title='Sisyephus', album=a3, genre='', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
+bones = Track.objects.create(title='Bones', album=a5, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
+stressed_out = Track.objects.create(title='Stressed Out', album=a1, genre='rock', released_at=dt, duration=5, explicit=False, created_at=dt, total_streams=100, cover_image=pp, location=tp)
+smth_i_need = Track.objects.create(title='Something I need', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
 
 # // add artist(s) to tracks.
 tear.artist.add(pilots)

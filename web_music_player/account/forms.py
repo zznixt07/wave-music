@@ -2,7 +2,7 @@ from django import forms
 from user.models import Userbase, Profile
 
 class UserSignupForm(forms.ModelForm):
-    accept_t_and_c = forms.BooleanField(label='',required=True)
+    accept_t_and_c = forms.BooleanField(label='', required=True)
 
     class Meta:
         model = Profile
@@ -19,8 +19,9 @@ class UserSignupForm(forms.ModelForm):
             'last_name': forms.TextInput(attrs={'placeholder': 'Last Name'}),
         }
 
+
 class UserLoginForm(forms.ModelForm):
-    remember_me = forms.BooleanField(label='Remember Me',required=True)
+    remember_me = forms.BooleanField(label='Remember Me', required=False)
     
     class Meta:
         model = Profile

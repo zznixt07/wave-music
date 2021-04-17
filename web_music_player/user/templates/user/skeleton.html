@@ -29,15 +29,6 @@
 {% block bottom_js %}
     <script type="text/javascript" src="{% static 'user/js/rythm.js' %}"></script>
     <script>
-        window.addEventListener('message', (event) => {
-            if (event.origin !== 'http://127.0.0.1:8000') return
-            if (event.data.type === 'ACK') return
-            console.log("data from iframe :", event.data)
-            event.source.postMessage({
-                type: 'ACK',
-                recieved: event.data,
-            }, event.origin)
-        })
         
     </script>
 {% endblock bottom_js %}

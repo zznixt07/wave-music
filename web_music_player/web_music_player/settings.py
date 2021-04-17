@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'account.apps.AccountConfig',
     'playlist.apps.PlaylistConfig',
+    'track.apps.TrackConfig',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -119,12 +120,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+LOGIN_REDIRECT_URL = '/'
 STATIC_ROOT = BASE_DIR / 'static_files'
 STATICFILES_DIRS = [
     BASE_DIR / 'common_static'
 ]
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = BASE_DIR / 'media' 
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'

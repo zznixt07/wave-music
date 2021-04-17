@@ -6,5 +6,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('browse/', views.browse, name='browse'),
     # path('playlist/', views.playlist, name='playlist'),
-    path('playlist/', include('playlist.urls', namespace='playlist')),
+    
 ]
