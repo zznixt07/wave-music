@@ -31,9 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'playlist.apps.PlaylistConfig',
     'user.apps.UserConfig',
     'account.apps.AccountConfig',
+    'playlist.apps.PlaylistConfig',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -103,6 +103,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTH_USER_MODEL = 'user.apps.UserConfig.models.UserBase'
+# AUTH_USER_MODEL = 'user.apps.UserConfig.UserBase'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

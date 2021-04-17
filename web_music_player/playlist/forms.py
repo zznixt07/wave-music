@@ -1,5 +1,5 @@
 from django import forms
-from .models import Playlist
+from user.models import Playlist
 
 class ViewPlaylistForm(forms.ModelForm):
 

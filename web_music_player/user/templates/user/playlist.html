@@ -36,7 +36,20 @@
             <span>&lt;3</span>
             <span>...</span>
         </div>
-
+        <div class="playlist-add display-none">
+            <form action="" method="POST">
+                <div class="add-to-playlist">
+                    <i class="btn close-btn ri-close-line"></i>
+                    {% csrf_token %}
+                    {% for playlist in playlists %}
+                        <p class="btn" data-playlist-id="{{ playlist.id }}">
+                            {{ playlist.name }}
+                        </p>
+                    {% endfor %}
+                    {% comment %}<input type="submit" name="Ok" hidden>{% endcomment %}
+                </div>
+            </form>
+        </div>
         <div class="tracks-list">
             <ul class="tracks">
                 <li class="header-row">
@@ -49,7 +62,7 @@
                     <span>&nbsp;</span>
                     <span>Duration</span>
                 </li>
-                <li class="">
+                <li class="" data-track-id="1">
                     <div class="index">
                         <span>1</span>
                         <i class="hover btn play-this ri-play-circle-fill"></i>
@@ -61,8 +74,8 @@
                             <span><a href="#">Twenty One Pilots</a></span>
                         </div>
                     </div>
-                    <span class="hidden btn ri-add-line" title="Add to Queue"></span>
-                    <span class="hidden btn ri-play-list-add-line" title="Add to Playlist"></span>
+                    <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
+                    <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
                     <span aria-label="album"><a href="#">Heathens</a></span>
                     <span aria-label="date-added">Mar 30, 2019</span>
                     <span class="heart ri-heart-3-line"></span>
@@ -76,6 +89,7 @@
 
 {% block bottom_js %}
     <script type="text/javascript">
+        // const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value
         function toggleClass(elem, cls1, cls2) {
             classes = elem.classList
             if (Array.from(classes).indexOf(cls1) !== -1) {
@@ -88,19 +102,56 @@
                 classes.add(cls1)
             }
         }
+
+
+        const playlistForm = document.querySelector('.playlist-add')
+        // playlistForm.style.display = 'none';
+
+        const closeForm = () => {
+            playlistForm.classList.add('display-none')
+        }
+        const closeListPlaylistsBtn = document.querySelector('.close-btn')
+        closeListPlaylistsBtn.addEventListener('click', closeForm)
+        playlistForm.addEventListener('click', closeForm)
+
+        const addToPlaylistBtns = document.querySelectorAll('.playlist-this')
+        addToPlaylistBtns.forEach((playlistBtn) => {
+            playlistBtn.addEventListener('click', () => {
+                playlistForm.classList.remove('display-none')
+            })
+        })
+
+        const playlistElems = document.querySelectorAll('.add-to-playlist p')
+        playlistElems.forEach((pl) => {
+            pl.addEventListener('click', () => {
+                const playlistId = pl.dataset.playlistId
+                fetch('http://127.0.0.1:8000/playlist/addToPlaylist/', {
+                    method: 'POST',
+                    body: JSON.stringify({playlist_id: 1, track_id: 1}),
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                }).then(resp => resp.text())
+                    .then(data => data)
+                    .catch(err => console.log(err))
+            })
+        })
+
         const heartAnchors = document.querySelectorAll('.heart')
         heartAnchors.forEach((heartAnchor) => {
             heartAnchor.addEventListener('click', () => {
                 toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line')
             })
         })
+
         const playBtns = document.querySelectorAll('.play-this')
         playBtns.forEach((playBtn) => {
             playBtn.addEventListener('click', () => {
                 window.parent.postMessage({
                     type: 'playTrack',
                     song: {id: 1}
-            }, 'http://127.0.0.1:8000')
+                }, 'http://127.0.0.1:8000')
             })
         })
 

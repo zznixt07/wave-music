@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.db import models
 from datetime import datetime, timezone
@@ -11,15 +10,18 @@ def aware_utc_now():
     return datetime.now(timezone.utc)
 
 
-# class Profile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-class Profile(User):
+class Profile(models.Model):
+    username = models.CharField(max_length=32, unique=True, null=False, blank=False)
+    password = models.CharField(max_length=64)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200, blank=True, null=False, default='')
+    email = models.CharField(max_length=200)
     description = models.TextField(max_length=2000, blank=True)
     country = models.CharField(max_length=50, blank=True, choices=COUNTRIES, default='US')
     profile_pic = models.ImageField(upload_to=f'userbase/', blank=True, null=False, default='')
     gender = models.CharField(max_length=20, choices=GENDER, blank=True, default='', null=False)
     age = models.PositiveSmallIntegerField(validators=[MaxValueValidator(150)], default=None, null=True)
+    created_at = models.DateTimeField('date when the account was created', default=aware_utc_now)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -142,9 +144,9 @@ python manage.py reset_db && python manage.py makemigrations && python manage.py
 pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\django_testing_here\\media\\42.jfif"
 
 # // create user in DB
-zznix = Userbase.objects.create_user(first_name='Nisan', last_name='Thapa', gender='male', age=20, profile_pic=pp, username='zznix', password='1234')
-kells = Userbase.objects.create_user(first_name='Nischal', last_name='Khatri', gender='male', age=20, profile_pic=pp, username='kells', password='1234')
-lekha = Userbase.objects.create_user(first_name='Kamala', last_name='Thapa',gender='female', age=44, profile_pic=pp, username='lekha', password='brt')
+zznix = Userbase.objects.create(first_name='Nisan', last_name='Thapa', gender='male', age=20, profile_pic=pp, username='zznix', password='1234')
+kells = Userbase.objects.create(first_name='Nischal', last_name='Khatri', gender='male', age=20, profile_pic=pp, username='kells', password='1234')
+lekha = Userbase.objects.create(first_name='Kamala', last_name='Thapa',gender='female', age=44, profile_pic=pp, username='lekha', password='brt')
 
 # // add followers to a user
 zznix.followers.add(lekha, kells)
@@ -170,13 +172,13 @@ dt = datetime.now(timezone.utc)
 pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\django_testing_here\\media\\78.jfif"
 
 # // add artists to DB
-pilots = Artist.objects.create_user(first_name='21 Pilots', profile_pic=pp, username='21p', password='00',)
-ryan = Artist.objects.create_user(first_name='Ryan', last_name='Tedder', gender='male', profile_pic=pp, username='rtedder', password='00',)
-one_r = Artist.objects.create_user(first_name='One Republic', profile_pic=pp, username='@1Rp', password='00',)
-tyler = Artist.objects.create_user(first_name='Tyler',gender='male', last_name='lyle', profile_pic=pp, username='tyler_lyle', password='00',)
-andrew = Artist.objects.create_user(first_name='Andrew', gender='male', last_name='Bird', profile_pic=pp, username='bird_andrew', password='00',)
-galantis = Artist.objects.create_user(first_name='Galantis', gender='female', profile_pic=pp, username='@galantis', password='00',)
-midnight = Artist.objects.create_user(first_name='The Midnight', gender='female', profile_pic=pp, username='theMidnight', password='00',)
+pilots = Artist.objects.create(first_name='21 Pilots', profile_pic=pp, username='21p', password='00',)
+ryan = Artist.objects.create(first_name='Ryan', last_name='Tedder', gender='male', profile_pic=pp, username='rtedder', password='00',)
+one_r = Artist.objects.create(first_name='One Republic', profile_pic=pp, username='@1Rp', password='00',)
+tyler = Artist.objects.create(first_name='Tyler',gender='male', last_name='lyle', profile_pic=pp, username='tyler_lyle', password='00',)
+andrew = Artist.objects.create(first_name='Andrew', gender='male', last_name='Bird', profile_pic=pp, username='bird_andrew', password='00',)
+galantis = Artist.objects.create(first_name='Galantis', gender='female', profile_pic=pp, username='@galantis', password='00',)
+midnight = Artist.objects.create(first_name='The Midnight', gender='female', profile_pic=pp, username='theMidnight', password='00',)
 
 # // add followers to artists (same as above)
 pilots.followers.add(zznix, kells)
