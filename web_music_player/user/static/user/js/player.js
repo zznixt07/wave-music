@@ -18,6 +18,7 @@ let player = new APlayer({
             url: '/static/user/audio/1.mp3',
         },
     ],
+    theme: '#445366',
 });
 
 document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
@@ -30,6 +31,8 @@ document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
 )
 
 
+document.querySelector('.prev-track').addEventListener('click', () => player.skipBack())
+document.querySelector('.next-track').addEventListener('click', () => player.skipForward())
 const playPauseBtn = document.querySelector('.play-or-pause-track')
 let paused = true
 playPauseBtn.addEventListener('click', function () {
@@ -49,7 +52,7 @@ player.on('pause', function () {
 
 async function getTrack(id) {
     return (
-        await fetch('track/getTrack/' + id, {
+        await fetch('/track/getTrack/' + id, {
             method: 'GET',
             }).then(resp => resp.json())
                 .then(data => data)
@@ -59,7 +62,6 @@ async function getTrack(id) {
 
 function addToQueue(tracks) {
     tracks.forEach((track) => {
-        console.log(track.title, track.artists, track.audio_url, track.image_url)
         player.list.add([{
             name: track.title,
             artist: Object.values(track.artists[0])[0],
@@ -68,9 +70,6 @@ function addToQueue(tracks) {
         }])
     })
     player.play()
-    player.list.show()
-    setTimeout(() => player.list.hide(), 1000)
-
 }
 
 function playTrack(track) {
@@ -104,12 +103,11 @@ window.addEventListener('message', async (event) => {
 
     if (data.type === 'playTrack') {
         const trackDetails = await getTrack(data.track.id)
-        console.log(trackDetails)
         playTrack(trackDetails)
     }
     else if (data.type == 'queueTracks') {
+        if (data.clearQueue) player.list.clear()
         const tracks = []
-        
         for (const track of data.tracks) {
             if (track.hasOwnProperty('id')) {
                 tracks.push(await getTrack(track.id))

@@ -11,6 +11,8 @@ urlpatterns = [
     path('account/', include('account.urls', namespace='account')),
     path('playlist/', include('playlist.urls', namespace='playlist')),
     path('track/', include('track.urls', namespace='track')),
+    path('album/', include('album.urls', namespace='album')),
+    path('artist/', include('artist.urls', namespace='artist')),
 ]
 # ] + [
 #     re_path(

@@ -12,8 +12,6 @@ from .constants import *
 def aware_utc_now():
     return datetime.now(timezone.utc)
 
-# class Profile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class Profile(User):
     description = models.TextField(max_length=2000, blank=True)
@@ -34,7 +32,6 @@ class Profile(User):
                 save=False,
             )
         super().save(*args, **kwargs)
-
 
         # img = Image.open(self.profile_pic.path)
         # if img.height > 300 or img.width > 300:
@@ -197,7 +194,7 @@ kells.followers.add(zznix)
 # // create playlist in DB
 deez = Playlist.objects.create(name='deezloaderz', description='soundiiz')
 catchy = Playlist.objects.create(name='catchy', description='kells playlist',)
-nword = Playlist.objects.create(name='The N Word', description='nostalgia')
+nword = Playlist.objects.create(name='Nostalgic Songs', description='Songs from 80\'s and 90\'s')
 
 # // add a owner to a playlist.
 deez.owner.add(zznix)

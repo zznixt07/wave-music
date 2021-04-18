@@ -83,5 +83,8 @@ def index(request, playlist_id):
     else:
         return 'HTTPNotAllowed'
 
-
+def get_track_ids(request, playlist_id):
+    return JsonResponse([
+        t.id for t in Playlist.objects.get(id=playlist_id).tracks.all()
+    ], safe=False)
 

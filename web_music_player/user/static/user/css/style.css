@@ -262,7 +262,7 @@ header.sticky-nav .tabs * {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     overflow-y: hidden;
     justify-items: center;
-    align-items: flex-end;
+    /*align-items: flex-end;*/
 }
 
 .my-card {
@@ -279,11 +279,33 @@ header.sticky-nav .tabs * {
 
 .my-card .cover {
     margin-bottom: 1rem;
+    position: relative;
 }
 
 .my-card img {
     width: 100%;
     object-fit: cover;
+}
+
+.hover-play-card {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 300%;
+    border-radius: 50%;
+}
+.my-card:hover img {
+    filter: brightness(0.25);
+}
+.cover img:hover+.hover-play-card {
+    display: block;
+}
+
+.hover-play-card:hover {
+    display: block;
+    background-color: var(--secondary-color);
 }
 
 .card-info > * {
@@ -323,8 +345,6 @@ header.sticky-nav .tabs * {
 }
 
 @media screen and (max-width: 600px) {
-    
-
     .browse .summary-cards {
         /*grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));*/
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));

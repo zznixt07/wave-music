@@ -102,8 +102,6 @@
         let SELECTED_SONG;
         // const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value
         const playlistForm = document.querySelector('.playlist-add')
-        // playlistForm.style.display = 'none';
-
 
         // show list of playlist to add to after clicking add to playlist button
         const addToPlaylistBtns = document.querySelectorAll('.playlist-this')
@@ -145,7 +143,7 @@
                 if (toggleClass(heartAnchor, 'ri-heart-3-fill', 'ri-heart-3-line') === 'ri-heart-3-line') {
                     method = 'DELETE'
                 }
-                fetch('favourites/', {
+                fetch('/playlist/favourites/', {
                     method: method,
                     body: JSON.stringify({
                         track_id: heartAnchor.parentElement.dataset.trackId
@@ -184,6 +182,7 @@
             window.parent.postMessage({
                 type: 'queueTracks',
                 tracks: tracks,
+                clearQueue: true,
             }, 'http://127.0.0.1:8000')
         })
 

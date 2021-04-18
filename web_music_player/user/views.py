@@ -36,7 +36,6 @@ def browse(request):
     categories['Recently Played'] = Playlist.objects.filter(owner__id=curr_user.id) \
                                     .order_by('-last_played_at')
     categories['Top Playlists'] = playlists.order_by('-times_played')
-    categories['Your Favourites'] = curr_user.favourites.all()
     
     artists = {}
     artists['Featured Artists'] = Artist.objects.all()
@@ -48,6 +47,7 @@ def browse(request):
         'playlist_categories': categories,
         'album_categories': albums,
         'artist_categories': artists,
+        'Favourite': curr_user.favourites.all(),
     }
 
     resp = render(request, 'user/browse.html', context=context)
