@@ -3,7 +3,8 @@ from django.views import generic
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
-from .forms import UserSignupForm, UserLoginForm
+from .forms import UserSignupForm, UserLoginForm, UserUpdateForm
+from user.models import Profile
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -31,3 +32,31 @@ class OwnLogoutView(auth_views.LogoutView):
     template_name = 'account/login.html'
     next_page = reverse_lazy('account:login')
     success_url = reverse_lazy('account:login')
+
+class OwnAccountUpdateView(generic.UpdateView):
+    template_name = 'account/account.html'
+    model = Profile
+    fields = [
+        'username', 'password', 'first_name', 'last_name',
+        'email', 'country', 'gender', 'age',
+    ]
+    # form_class = UserUpdateForm
+    success_url = reverse_lazy('user:index')
+
+class OwnAccountUpdateView(generic.UpdateView):
+    template_name = 'account/account.html'
+    model = Profile
+    fields = [
+        'username', 'password', 'first_name', 'last_name',
+        'email', 'country', 'gender', 'age',
+    ]
+    # form_class = UserUpdateForm
+    success_url = reverse_lazy('user:index')
+
+class OwnPasswordChangeView(auth_views.PasswordChangeView):
+    template_name = 'account/password.html'
+    
+    # form_class = UserUpdateForm
+    # success_url = reverse_lazy('account:login')
+
+

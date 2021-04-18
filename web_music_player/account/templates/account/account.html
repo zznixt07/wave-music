@@ -2,26 +2,16 @@
 {% load static %}
 
 {% block title %}
-    Signup - Wave
+    Account - Wave
 {% endblock title %}
-
-{% block inline_css %}
-    <style >
-        
-    </style>
-{% endblock inline_css %}
 
 {% block content %}
     <div class="main">
-        <section class="center">     
+        <section class="center">
             <form action="" method="POST" novalidate>
-                {% csrf_token %}
-                
+                {% csrf_token %}                
                 <div class="text-center starting-info">
-                    <h2>Hello! Signup</h2>
-                    <p>
-                        Have an account? <a href="{% url 'account:login' %}">Log in</a>
-                    </p>
+                    <h2>Update Account</h2>
                 </div>
                 <ul>
                     <li>
@@ -37,10 +27,15 @@
                     <li>
                         {{ form.password.label_tag }}
                             <div class="password">
-                                {{ form.password }}
-                                <i class="toggle-pswd ri-eye-line"></i>
+                                <input type="password" name="password" value="*****" disabled id="id_password">
+                                {% comment %}<i class="toggle-pswd ri-eye-line"></i>{% endcomment %}
                             </div>
-                        <div>
+                            <li class="submit-btn">
+                                <a href="#">
+                                    <input type="" value="Change password" readonly 
+                                            style="text-align: center; cursor: pointer;">
+                                </a>
+                            </li>
                         <small>{{ form.password.errors }}</small>
                     </li>
                     <li>
@@ -78,21 +73,15 @@
                             </div>
                         </div>
                     </li>
-                    <li id="chkbox">
-                        {{ form.accept_t_and_c.label_tag }}Accept <a href="#">terms and conditions</a>
-                        {{ form.accept_t_and_c }}
-                        <small>{{ form.accept_t_and_c.errors }}</small>
-                            
-                    </li>
                     {% comment %}django login auth view wont show idnividual errors{% endcomment %}
                     <div>{{ form.non_field_errors }}</div>
                     <li class="submit-btn">
-                        <input type="submit" value="Register">
+                        <input type="submit" value="Update">
                     </li>
                 </ul>
             </form>
             <div class="half-side-image">
-                <img src="{% static 'account/imgs/4.jpg' %}">
+                <img src="{% static 'account/imgs/listening.jpg' %}">
             </div>
         </section>
     </div>

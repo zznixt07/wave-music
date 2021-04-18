@@ -38,13 +38,13 @@ input, select {
     width: unset;
     height: unset;
 }
-input[type="submit"] {
+.submit-btn input {
     width: 50%;
     min-width: 50px;
     border-radius: 2rem;
     border: solid 1px black;
 }
-input[type="submit"]:hover {
+.submit-btn input:hover {
     background-color: black;
     color: white;
 }
@@ -66,7 +66,7 @@ label {
     gap: 1.5rem;
 }
 .password {position: relative;}
-.password input {padding-right: 20px;}
+.password input {padding-right: 2.1rem;}
 .password .toggle-pswd {
     position: absolute;
     right: 1rem;

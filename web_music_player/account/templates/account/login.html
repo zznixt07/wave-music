@@ -49,6 +49,7 @@
                         {{ form.remember_me }}
                         <small>{{ form.remember_me.errors }}</small>
                     </li>
+                    {% comment %}django login auth view wont show idnividual errors{% endcomment %}
                     <div>{{ form.non_field_errors }}</div>
                     <li class="submit-btn">
                         <input type="submit" value="Login">
