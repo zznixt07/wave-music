@@ -18,7 +18,9 @@
 
     {% block external_css %} {% endblock external_css %}
         
-    {% block top_js %} {% endblock top_js %}
+    {% block top_js %}
+        <script src="{% static 'js/utils.js' %}"></script>
+    {% endblock top_js %}
 </head>
 
 <body>

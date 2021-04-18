@@ -44,6 +44,16 @@ body {
         "player";
 }
 
+aside {
+    padding: 0 0.5rem;
+}
+
+.sidebar-links > div, .playlists > * {
+    display: flex;
+    align-items: center;
+    margin: 0.3rem auto;
+}
+
 .iframe-browse {
     height: 100%;
     grid-area: maincontent;
@@ -58,7 +68,6 @@ iframe {
     height: 100%;
     border: 0;
 }
-
 
 /* this class is added through JS by the music player*/
 .aplayer {
@@ -104,9 +113,6 @@ iframe {
     width: 35%;
 }
 
-
-
-
 .main-grid {
     display: grid;
     grid-template-columns: auto 7fr;
@@ -145,12 +151,10 @@ aside .logo img {
 }
 
 header.sticky-nav {
-    padding-top: 1rem;
     display: flex;
     justify-content: space-between;
     position: sticky;
-    top: 0;
-    background-color: rgba(10, 10, 10, 0.3);
+    top: 5px;
     align-items: center;
     gap: 0.2rem;
 }
@@ -166,11 +170,12 @@ header.sticky-nav .tabs * {
 .account-dropdown {
     display: flex;
     gap: 0.3rem;
-    max-width: 15%;
+    max-width: 150px;
     background-color: var(--secondary-color);
     border-radius: 1.5rem;
     padding: 0.2rem;
     align-items: center;
+    position: relative;
 }
 
 .account-dropdown .username {
@@ -182,7 +187,23 @@ header.sticky-nav .tabs * {
     width: 30px;
 }
 
+.account {
+    position: absolute;
+    top: 2rem;
+    right: 5px;
+    padding: 0 1rem;
+    background-color: var(--secondary-color);
+    border-radius: 1rem;
+    display: none;
+}
 
+.flip {
+    transform: rotate(180deg);
+}
+
+.unflip {
+    transform: rotate(0deg);
+}
 
 /*
 .music-controller {
@@ -302,9 +323,7 @@ header.sticky-nav .tabs * {
 }
 
 @media screen and (max-width: 600px) {
-    header.sticky-nav {
-        display: none;
-    }
+    
 
     .browse .summary-cards {
         /*grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));*/
@@ -323,6 +342,13 @@ header.sticky-nav .tabs * {
 
     .aplayer .aplayer-info .controls-btns {
         right: 0;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    header.sticky-nav .tabs {
+        /*display: none;*/
+        visibility: hidden;
     }
 }
 

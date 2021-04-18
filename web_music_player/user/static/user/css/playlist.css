@@ -38,18 +38,47 @@ body {
     background-color: var(--primary-color);
 }
 
+.playlist-grid {
+    padding: 1rem 2.5rem;
+}
+
 header {
     height: 50%;
 }
 
 .header-img {
     max-width: 200px;
+    object-fit: contain;
+}
+.info > * {
+    margin: 0 auto;
+}
+
+.info div {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.info ul {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0;
 }
 
 .playlist-info {
     display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 
 }
+
+#playlist-name {
+    font-size: 7vw;
+    margin: 1rem auto;
+}
+
+ul.tracks {padding: 0}
 
 #track-num {
     justify-self: flex-end;
@@ -57,7 +86,7 @@ header {
 
 .tracks li, .header-row {
     display: grid;
-    grid-template-columns: 1fr 7fr 1fr 1fr 6fr 5fr 1fr 4fr;
+    grid-template-columns: 2fr 7fr 1fr 1fr 6fr 5fr 1fr 4fr;
     grid-template-rows: 1fr;
     column-gap: 0.5rem;
     padding: 0.3rem 0;
@@ -65,7 +94,7 @@ header {
 }
 
 /*center the first column*/
-.tracks li .index, .hidden {
+.tracks li .index, .header-row, .hidden {
     justify-self: center;
 }
 
@@ -75,26 +104,30 @@ header {
 .tracks li:hover .hidden {visibility: visible;}
 
 .btn {cursor: pointer;}
+.btn:hover {transform: scale(1.1);}
 .play-this {font-size: 230%;}
 
 .tracks img {
     width: 50px;
 }
 
-.tracks div {
+.track-artist {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr;
+    gap: 0.5rem;
 }
 
 .track-artist div {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: min-content min-content;
 }
 
-.heart {
-    cursor: pointer;
+.shortcuts {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .playlist-add {
@@ -153,4 +186,36 @@ header {
 .hidden:hover {
     background-color: var(--secondary-color);
     border-radius: 50%;
+}
+
+.play-playlist {
+    font-size: 400%;
+    color: var(--theme-color)
+}
+.heart-playlist {
+    font-size: 230%;
+
+}
+
+@media screen and (max-width: 600px) {
+    .playlist-grid {
+        padding: 0 0.8rem;
+    }
+    .queue-this, .playlist-this, .date-added, .heart, .track-duration {
+        display: none;
+    }
+    .tracks li {
+        grid-template-columns: 1fr 4fr 1fr;
+    }
+}
+@media screen and (max-width: 400px) {
+    .playlist-grid {
+        padding: 0 0.5rem;
+    }
+    .album {
+        display: none;
+    }
+    .tracks li {
+        grid-template-columns: 1fr 5fr;
+    }
 }

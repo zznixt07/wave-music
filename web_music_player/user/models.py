@@ -122,14 +122,17 @@ class Playlist(models.Model):
     last_played_at = models.DateTimeField(default=aware_utc_now)
     # below field is not updated when calling .update() on other fields
     # only auto updated when calling .save()
-    last_modified_at = models.DateTimeField(auto_now=True,         
+    last_modified_at = models.DateTimeField(auto_now=True,
         verbose_name='store the last time when a track was added or removed from this playlist')
     # cant make owner a OneToOneField because it can be repeated(violates unique constraint)
     owner = models.ManyToManyField('Userbase')
     tracks = models.ManyToManyField('Track', through='TrackPlaylists')
-        
+
     def __str__(self):
         return self.name + ' by ' + str(self.owner.get().username)
+
+# class PlaylistCategory(models.Model):
+#     name = models.CharField(max_length=50, default='', null=False, blank=True)
 
 class Followers(models.Model):
     leader = models.ForeignKey(

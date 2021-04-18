@@ -5,13 +5,6 @@
     Home - Wave
 {% endblock title %}
 
-
-{% block inline_css %}
-    <style >
-        
-    </style>
-{% endblock inline_css %}
-
 {% block external_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/APlayer.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
@@ -25,10 +18,3 @@
 {% block iframe %}
     <iframe src="{% url 'user:browse' %}"></iframe>
 {% endblock iframe %}
-
-{% block bottom_js %}
-    <script type="text/javascript" src="{% static 'user/js/rythm.js' %}"></script>
-    <script>
-        
-    </script>
-{% endblock bottom_js %}

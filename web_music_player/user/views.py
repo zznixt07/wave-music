@@ -5,46 +5,52 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from .forms import ViewPlaylistForm
-from .models import Playlist, Userbase
+from .models import Playlist, Userbase, Artist, Album
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
+options_to_fields = {
+    'artist_name': 'track__artist',
+    'album_name': 'track__album',
+    'date_added': 'added_at',
+    'track_name': 'track__name',
+}
 # @login_required
 def index(request):
     context = {}
     resp = render(request, 'user/skeleton.html', context=context)
     return resp
 
+def get_tracks_in_playlist(playlist):
+    playlist_order = playlist.sort_by
+    return playlist.trackplaylists_set.all() \
+                .order_by(options_to_fields[playlist_order])
+
 # @login_required
 def browse(request):
-    context = {}
+    playlists = Playlist.objects.all()
+    curr_user = Userbase.objects.get(username=request.user.username)
+    categories: Dict[str, List['QuerySet']] = {}
+    categories['Recently Played'] = Playlist.objects.filter(owner__id=curr_user.id) \
+                                    .order_by('-last_played_at')
+    categories['Top Playlists'] = playlists.order_by('-times_played')
+    categories['Your Favourites'] = curr_user.favourites.all()
+    
+    artists = {}
+    artists['Featured Artists'] = Artist.objects.all()
+
+    albums = {}
+    albums['New Releases'] = Album.objects.all().order_by('-released_at')
+
+    context = {
+        'playlist_categories': categories,
+        'album_categories': albums,
+        'artist_categories': artists,
+    }
+
     resp = render(request, 'user/browse.html', context=context)
     resp["X-Frame-Options"] = 'SAMEORIGIN'
     return resp
-
-# @login_required
-# def playlist(request):
-#     "changing header is tricky when using generic views"
-
-#     if request.method == 'GET':
-#         # user = request.user
-#         user = Userbase.objects.get(username='zznix')
-#         other_playlists = user.playlists.all().order_by('-last_played_at')
-#         own_playlists = Playlist.objects \
-#                             .filter(owner__id=user.id) \
-#                             .order_by('-last_played_at')
-
-#         playlists = list(own_playlists) + list(other_playlists)
-#         # form = ViewPlaylistForm()
-#         context = {
-#             # 'form': form,
-#             'playlists': playlists,
-#         }
-#         resp = render(request, 'user/playlist.html', context=context)
-#         resp["X-Frame-Options"] = 'SAMEORIGIN'
-#     else:
-#         pass
-
-#     return resp
 

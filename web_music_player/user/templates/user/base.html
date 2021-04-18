@@ -3,7 +3,12 @@
 
 {% block inline_css %}
     <style >
-        
+        .aplayer .aplayer-list ol li.aplayer-list-light, .aplayer .aplayer-list ol li:hover {
+            background-color: black !important;
+        }
+        .btn {
+            cursor: pointer;
+        }
     </style>
 {% endblock inline_css %}
 
@@ -16,8 +21,6 @@
         </div>
         
         <div class="music-controller">
-
-            <button id="button" class="rythm-bass">Add 1 new song</button>
             <div id="3rd-p-player"></div>
         </div>
 

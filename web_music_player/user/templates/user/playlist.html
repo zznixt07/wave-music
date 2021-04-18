@@ -6,12 +6,6 @@
     Playlist - Wave
 {% endblock title %}
 
-{% block inline_css %}
-    <style >
-        
-    </style>
-{% endblock inline_css %}
-
 {% block external_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/playlist.css' %}">
 {% endblock external_css %}
@@ -22,20 +16,21 @@
             <img class="header-img" src="{% static 'user/imgs/3.jfif' %}">
             <div class="info">
                 <p>PLAYLIST</p>
-                <h1>Top Hits of 2014</h1>
-                <p>Rewind and rediscover big songs from 2015.</p>
-                <p>Spotify 
+                <h1 id="playlist-name">{{ current_playlist.name }}</h1>
+                <p>{{ current_playlist.description }}</p>
+                <div>
+                    <span>{{ current_playlist.owner.all|join:", " }}</span>
                     <ul>
-                        <li>567,598 likes</li>
-                        <li>100 songs, 5 hr 58 min</li>
+                        <li>{{ current_playlist..userbase_set.all|length }} likes</li>
+                        <li>Duration: {{ playlist_duration|sec_to_hhmmss }}</li>
                     </ul>
-                </p>
+                </div>
             </div>
         </header>
         <div class="shortcuts">
-            <span>|></span>
-            <span>&lt;3</span>
-            <span>...</span>
+            <span class="btn play-playlist ri-play-circle-fill"></span>
+            <span class="btn heart-playlist ri-heart-line"></span>
+            <span class="btn">...</span>
         </div>
         <div class="playlist-add display-none">
             <form action="" method="POST">
@@ -54,19 +49,19 @@
         <div class="tracks-list">
             <ul class="tracks">
                 <li class="header-row">
-                    <span id="track-num">#</span>
+                    <span class="index" id="track-num">#</span>
                     <span>Title</span>
-                    <span>&nbsp;</span>
-                    <span>&nbsp;</span>
-                    <span>Album</span>
-                    <span>Date Added</span>
-                    <span>&nbsp;</span>
-                    <span>Duration</span>
+                    <span class="queue-this">&nbsp;</span>
+                    <span class="playlist-this">&nbsp;</span>
+                    <span class="album">Album</span>
+                    <span class="date-added">Date Added</span>
+                    <span class="heart">&nbsp;</span>
+                    <span class="track-duration">Duration</span>
                 </li>
                 {% for track in current_playlist.tracks.all %}
                     <li class="" data-track-id="{{ track.id }}">
                         <div class="index">
-                            <span>{{ track.id }}</span>
+                            <span>{{ forloop.counter }}</span>
                             <i class="hover btn play-this ri-play-circle-fill"></i>
                         </div>
                         <div class="track-artist">
@@ -81,14 +76,14 @@
                         </div>
                         <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
                         <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
-                        <span aria-label="album"><a href="#">{{ track.album.title }}</a></span>
-                        <span aria-label="date-added">{{ track.created_at|date:"M d, Y" }}</span>
+                        <span class="album" aria-label="album"><a href="#">{{ track.album.title }}</a></span>
+                        <span class="date-added" aria-label="date-added">{{ track.created_at|date:"M d, Y" }}</span>
                         {% if track in curr_user.favourites.all %}
-                            <span class="heart ri-heart-3-fill"></span>
+                            <span class="btn heart ri-heart-3-fill"></span>
                         {% else %}
-                            <span class="heart ri-heart-3-line"></span>
+                            <span class="btn heart ri-heart-3-line"></span>
                         {% endif %}
-                        <span aria-label="duration">{{ track.duration|sec_to_hhmmss }}</span>
+                        <span class="track-duration" aria-label="track-duration">{{ track.duration|sec_to_hhmmss }}</span>
                     </li>
                 
                 {% endfor %}
@@ -99,37 +94,6 @@
 
 {% block bottom_js %}
     <script type="text/javascript">
-        // returns the class added
-        function toggleClass(elem, cls1, cls2) {
-            classes = elem.classList
-            if (Array.from(classes).indexOf(cls1) !== -1) {
-                classes.remove(cls1)
-                classes.add(cls2)
-                return cls2
-            }
-            // below:: using if is different than using else
-            else {
-                classes.remove(cls2)
-                classes.add(cls1)
-                return cls1
-            }
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
 
         const closeForm = () => {
             playlistForm.classList.add('display-none')
@@ -160,12 +124,9 @@
         playlistElems.forEach((pl) => {
             pl.addEventListener('click', () => {
                 const playlistId = pl.dataset.playlistId
-                fetch('/', {
+                fetch('/playlist/'+playlistId , {
                     method: 'POST',
-                    body: JSON.stringify({
-                        playlist_id: playlistId,
-                        track_id: SELECTED_SONG
-                    }),
+                    body: JSON.stringify({track_id: SELECTED_SONG}),
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),
                         'Content-Type': 'application/json'
@@ -209,6 +170,21 @@
                     track: {id: trackId}
                 }, 'http://127.0.0.1:8000')
             })
+        })
+
+        // play all songs in the playlist
+        const playAll = document.querySelector('.play-playlist')
+        playAll.addEventListener('click', () => {
+            const trackIds = Array.from(document.querySelectorAll('[data-track-id]'))
+                                    .map((t) => t.dataset.trackId)
+            const tracks = [];
+            trackIds.forEach((id) => {
+                tracks.push({'id': id})
+            })
+            window.parent.postMessage({
+                type: 'queueTracks',
+                tracks: tracks,
+            }, 'http://127.0.0.1:8000')
         })
 
     </script>

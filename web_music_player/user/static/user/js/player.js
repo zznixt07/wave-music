@@ -47,17 +47,6 @@ player.on('pause', function () {
 })
 
 
-const btn = document.getElementById('button')
-btn.addEventListener('click', function () {
-    player.list.add([
-        {
-            name: 'walking on the moon',
-            artist: 'Computer Glitch',
-            url: '/static/user/audio/walking.webm',
-        },
-    ]);
-})
-
 async function getTrack(id) {
     return (
         await fetch('track/getTrack/' + id, {
@@ -66,6 +55,22 @@ async function getTrack(id) {
                 .then(data => data)
                     .catch(err => console.log(err))
     )
+}
+
+function addToQueue(tracks) {
+    tracks.forEach((track) => {
+        console.log(track.title, track.artists, track.audio_url, track.image_url)
+        player.list.add([{
+            name: track.title,
+            artist: Object.values(track.artists[0])[0],
+            url: 'media/' + track.audio_url,
+            cover: 'media/' + track.image_url,
+        }])
+    })
+    player.play()
+    player.list.show()
+    setTimeout(() => player.list.hide(), 1000)
+
 }
 
 function playTrack(track) {
@@ -91,15 +96,25 @@ window.addEventListener('message', async (event) => {
     const data = event.data
     if (data.type === 'ACK') return
 
+    // event.source.postMessage({
+    //     type: 'ACK',
+    //     recieved: data,
+    // }, event.origin)
     console.log("data from iframe :", data)
-    event.source.postMessage({
-        type: 'ACK',
-        recieved: data,
-    }, event.origin)
 
     if (data.type === 'playTrack') {
         const trackDetails = await getTrack(data.track.id)
         console.log(trackDetails)
         playTrack(trackDetails)
+    }
+    else if (data.type == 'queueTracks') {
+        const tracks = []
+        
+        for (const track of data.tracks) {
+            if (track.hasOwnProperty('id')) {
+                tracks.push(await getTrack(track.id))
+            }
+        }
+        addToQueue(tracks)
     }
 })

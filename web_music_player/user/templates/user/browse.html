@@ -5,29 +5,20 @@
     Browse - Wave
 {% endblock title %}
 
-
-{% block inline_css %}
-    <style >
-        
-    </style>
-{% endblock inline_css %}
-
 {% block external_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
 {% endblock external_css %}
 
 {% block top_js %}
+    <script src="{% static 'js/utils.js' %}"></script>
     <script type="module">
-        function randomInt(min, max) {
-            // [min-max)
-            return Math.floor(Math.random() * (max - min)) + min
-        }
+        
 
         const sections = document.querySelectorAll('.browse > *')
         const reusable_html = (i) => `
             <div class="summary-cards">
                 <div class="my-card">
-                    <a href='/playlist'>
+                    <a href='/playlist/1/'>
                         <div class="cover">
                         </div>
                         <div class="card-info">
@@ -36,37 +27,14 @@
                         </div>
                     </a>
                 </div>
-               <div class="my-card">
-                    <a href='#'>
-                        <div class="cover">
-                        </div>
-                        <div class="card-info">
-                            <h4 class="title">Just try to forget these songs. We dare you</h4>
-                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                        </div>
-                    </a>
-                </div>
-               <div class="my-card">
-                    <a href='#'>
-                        <div class="cover">
-                        </div>
-                        <div class="card-info">
-                            <h4 class="title">Just try to forget these songs. We dare you</h4>
-                            <div>One hit wonders that will stay in your head forever after you have heard it.</div>
-                        </div>
-                    </a>
-                </div>
-               
-                          
-                
             </div>`
-        for (let section of sections) {
-            section.insertAdjacentHTML('beforeend', reusable_html(randomInt(1, 41)))
-        }
-        const cards = document.querySelectorAll('.my-card .cover')
+
+        // for (let section of sections) {
+            // section.insertAdjacentHTML('beforeend', reusable_html(randomInt(1, 3)))
+        // }
+        const cards = document.querySelectorAll('.my-card .cover-this')
         for (let card of cards) {
             const img = new Image();
-            // img.src = `./assets/imgs/${randomInt(1, 41)}.jfif`
             img.src = `/static/user/imgs/${randomInt(1, 41)}.jfif`
             card.appendChild(img)
         }
@@ -82,14 +50,43 @@
                 <img src="{% static 'user/imgs/logo.svg' %}">
                 <span>Wave</span>
             </div>
-            <p>Home</p>
-            <p>Search</p>
-            <p>Your library</p>
-            <section class="playlists">
-                <h3>PLAYLISTS</h3>
-                <p>Create playlist</p>
-                <p>Fav songs</p>
-            </section>
+            <div class="sidebar-links">
+                <div>
+                    <a href="">
+                        <i class="ri-home-6-fill"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="">
+                        <i class="ri-search-2-line"></i>
+                        <span>Search</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="">
+                        <i class="ri-folder-music-line"></i>
+                        <span>Your library</span>
+                    </a>
+                </div>
+                <section class="playlists">
+                    <br>
+                    <h3>PLAYLISTS</h3>
+
+                    <div>
+                        <a href="">
+                            <i class="ri-add-box-line"></i>
+                            <span>Create playlist</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="">
+                            <i class="ri-heart-2-fill"></i>
+                            <span>Fav songs</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
         </aside>
 
         <div class="content">
@@ -100,55 +97,145 @@
                     <a href="#">Albums</a>
                 </div>
                 
-                <div class="account-dropdown">
+                <div class="btn account-dropdown">
                     <img class="user-profile-pic" src="{% static 'user/imgs/logo.svg' %}">
                     <small class="username">22ioagadggksdghsjkd</small>
-                    <span class="">^</span>
-                    <a href="#"></a>
+                    <a href="#" class="more-account">
+                        <i class="ri-arrow-down-s-fill"></i>
+                        <div class="account">
+                            <p>
+                                <a href="#">Account</a>
+                                <i class="ri-external-link-line"></i>
+                            </p>
+                            <p>
+                                <a href="#">Log out</a>
+                                <i class="ri-external-link-line"></i>
+                            </p>
+                        </div>
+                    </a>
+                    <span>
+                    </span>
                 </div>
             </header>
-                
+
             <div class="browse">
-                <div class="recent-playlists">
-                    <h3>Recently Played</h3>
+                <div>
+                    
+                    {% for head, playlists in playlist_categories.items %}
+                        <h3>{{ head }}</h3>
+                        <div class="summary-cards">
+                            {% for playlist in playlists %}
+                                <div class="my-card">
+                                    <a href= {% url 'playlist:index' playlist.id %}>
+                                        <div class="cover cover-this" aria-label="playlist's cover image"></div>
+                                        <div class="card-info">
+                                            <h4 class="title">{{ playlist.name }}</h4>
+                                            <div>{{ playlist.description }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
                 </div>
-                <div class="most-played-music">
-                    <h3>Top Music</h3>
+
+                <div>
+                    
+                    {% for head, albums in album_categories.items %}
+                        <h3>{{ head }}</h3>
+                        <div class="summary-cards">
+                            {% for album in albums %}
+                                <div class="my-card">
+                                    <a href= {% url 'album:index' playlist.id %}>
+                                        <div class="cover" aria-label="Album's cover image">
+                                            <img src="{{ album.cover_image.url }}">
+                                        </div>
+                                        <div class="card-info">
+                                            <h4 class="title">{{ album.title }}</h4>
+                                            <div>{{ album.artist.all|join:" and " }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="fav-music">
-                    <h3>Your Favourites</h3>
+
+                <div>
+
+                    {% for head, artists in artist_categories.items %}
+                        <h3>{{ head }}</h3>
+                        <div class="summary-cards">
+                            {% for artist in artists %}
+                                <div class="my-card">
+                                    <a href= {% url 'artist:index' playlist.id %}>
+                                        <div class="cover" aria-label="Artist's cover image">
+                                            <img src="{{ artist.cover_image.url }}">
+                                        </div>
+                                        <div class="card-info">
+                                            <h4 class="title">{{ album.title }}</h4>
+                                            <div>{{ album.artist.all|join:" and " }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="artist-cat">
-                    <h3>Discover Artists</h3>
-                </div>
-                <div class="album-cat">
-                    <h3>Recommended Albums</h3>
-                </div>
-                <div class="new-releases">
-                    <h3>New Releases</h3>
-                </div>
-                <div class="my-playlists">
-                    <h3>Your Playlists</h3>
-                </div>
+
+                
+            
             </div>
-
+                
+            {% comment %}
+            <div class="recent-playlists">
+                <h3>Recently Played</h3>
+            </div>
+            <div class="most-played-music">
+                <h3>Top Music</h3>
+            </div>
+            <div class="fav-music">
+                <h3>Your Favourites</h3>
+            </div>
+            <div class="artist-cat">
+                <h3>Discover Artists</h3>
+            </div>
+            <div class="album-cat">
+                <h3>Recommended Albums</h3>
+            </div>
+            <div class="new-releases">
+                <h3>New Releases</h3>
+            </div>
+            <div class="my-playlists">
+                <h3>Your Playlists</h3>
+            </div>
+            {% endcomment %}
+        
         </div>
-
     </div>
 
 {% endblock content %}
 
 {% block bottom_js %}
     <script>
-        document.addEventListener('click', () => {
-            window.parent.postMessage({
-                type: 'addTrackToPlaylist',
-                song: {id: 1}
-            }, 'http://127.0.0.1:8000')
+        // window.addEventListener('message', (event) => {
+        //     if (event.origin !== 'http://127.0.0.1:8000') return
+        //     console.log('data from parent window :', event.data)
+        // })
+
+        const accLink = document.querySelector('.account-dropdown')
+        const arrow = document.querySelector('.more-account')
+        const accountDropdown = document.querySelector('.account')
+        accLink.addEventListener('click', () => {
+            const added = toggleClass(arrow, 'flip', 'unflip')
+            if (added === 'flip') {
+                accountDropdown.style.display = 'block'
+            }
+            else {
+                accountDropdown.style.display = 'none'
+            }
         })
-        window.addEventListener('message', (event) => {
-            if (event.origin !== 'http://127.0.0.1:8000') return
-            console.log('data from parent window :', event.data)
-        })
+
     </script>
 {% endblock bottom_js %}
