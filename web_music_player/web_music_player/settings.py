@@ -122,7 +122,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
+
 STATIC_ROOT = BASE_DIR / 'static_files'
 STATICFILES_DIRS = [
     BASE_DIR / 'common_static'

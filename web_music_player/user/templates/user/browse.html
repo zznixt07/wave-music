@@ -75,8 +75,8 @@
                                 <i class="ri-external-link-line"></i>
                             </p>
                             <p>
-                                <a href="#">Log out</a>
-                                <i class="ri-external-link-line"></i>
+                                {% comment %}<a href="{% url 'account:logout' %}">Log out</a>{% endcomment %}
+                                <span id="logout">Log out</span>
                             </p>
                         </div>
                     </a>
@@ -167,6 +167,9 @@
         //     if (event.origin !== 'http://127.0.0.1:8000') return
         //     console.log('data from parent window :', event.data)
         // })
+        document.getElementById('logout').addEventListener('click', () => {
+            parent.location.href = '/account/logout/'
+        })
         
         const cards = document.querySelectorAll('.my-card .cover-this')
         for (let card of cards) {
@@ -193,7 +196,6 @@
         const playPlaylistBtns = document.querySelectorAll('.hover-play-card')
         playPlaylistBtns.forEach((btn) => {
             btn.addEventListener('click', (event) => {
-                event.stopPropagation()
                 event.preventDefault()
                 const id = btn.dataset.playlistId
                 fetch('/playlist/getTracks/' + id + '/', {
@@ -212,7 +214,6 @@
                 })
             }, false)
         })
-
 
     </script>
 {% endblock bottom_js %}

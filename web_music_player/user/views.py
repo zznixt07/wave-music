@@ -17,25 +17,30 @@ options_to_fields = {
     'date_added': 'added_at',
     'track_name': 'track__name',
 }
-# @login_required
+
+@login_required
 def index(request):
     context = {}
     resp = render(request, 'user/skeleton.html', context=context)
     return resp
 
+@login_required
 def get_tracks_in_playlist(playlist):
     playlist_order = playlist.sort_by
     return playlist.trackplaylists_set.all() \
                 .order_by(options_to_fields[playlist_order])
 
-# @login_required
+@login_required
 def browse(request):
     playlists = Playlist.objects.all()
     curr_user = Userbase.objects.get(username=request.user.username)
     categories: Dict[str, List['QuerySet']] = {}
     categories['Recently Played'] = Playlist.objects.filter(owner__id=curr_user.id) \
                                     .order_by('-last_played_at')
-    categories['Top Playlists'] = playlists.order_by('-times_played')
+    categories['Top Playlists'] = playlists.order_by('-times_played')[:5]
+    categories['Recommended Playlists'] = [
+        p for p in playlists if p not in categories['Top Playlists']
+    ]
     
     artists = {}
     artists['Featured Artists'] = Artist.objects.all()

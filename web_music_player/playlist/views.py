@@ -37,7 +37,7 @@ def update_favourites(request):
         **info}
     )
 
-# @login_required
+@login_required
 def index(request, playlist_id):    
     "changing header is tricky when using generic views"
 

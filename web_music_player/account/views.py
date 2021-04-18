@@ -26,3 +26,8 @@ class OwnLoginView(auth_views.LoginView):
     # authentication_form = UserLoginForm
     redirect_authenticated_user = True
     success_url = reverse_lazy('user:index')
+
+class OwnLogoutView(auth_views.LogoutView):
+    template_name = 'account/login.html'
+    next_page = reverse_lazy('account:login')
+    success_url = reverse_lazy('account:login')
