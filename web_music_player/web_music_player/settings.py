@@ -26,7 +26,7 @@ SECRET_KEY = '1(4bs@kueg*n#uwyk%#a!m#)5$!(_!67q5v!svi7zv3=sd*@+3'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
 
@@ -37,16 +37,29 @@ INSTALLED_APPS = [
     'track.apps.TrackConfig',
     'album.apps.AlbumConfig',
     'artist.apps.ArtistConfig',
-    'django_extensions',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_extensions',
+    'django_admin_generator',
+    'debug_toolbar',
+    'mail_panel',
 ]
 
+# DEBUG_TOOLBAR_PANELS = (
+#     'mail_panel.panels.MailToolbarPanel',
+# )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

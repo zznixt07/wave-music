@@ -8,13 +8,23 @@
         }
         .btn {
             cursor: pointer;
+            color: white !important;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            height: 100vh;
+            width: 100vw;
+            /*opacity: 1;*/
         }
     </style>
 {% endblock inline_css %}
 
 
 {% block content %}
-
+    <canvas></canvas>
     <div class="main">
         <div class="iframe-browse">
             {% block iframe %} {% endblock iframe %}

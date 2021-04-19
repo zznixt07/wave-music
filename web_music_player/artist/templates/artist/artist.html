@@ -3,34 +3,37 @@
 {% load sec_to_hhmmss %}
 
 {% block title %}
-    Playlist - Wave
+    {{ artist.get_full_name }} - Wave
 {% endblock title %}
 
 {% block external_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/playlist.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cards.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'artist/css/artist.css' %}">
 {% endblock external_css %}
 
 {% block content %}
     <div class="playlist-grid">
-        <header class="playlist-info">
-            <img class="header-img" src="{% static 'user/imgs/3.jfif' %}">
-            <div class="info">  
-                <p>PLAYLIST</p>
-                <h1 id="playlist-name">{{ current_playlist.name }}</h1>
-                <p>{{ current_playlist.description }}</p>
-                <div>
-                    <span>{{ current_playlist.owner.all|join:", " }}</span>
-                    <ul>
-                        <li>{{ current_playlist..userbase_set.all|length }} likes</li>
-                        <li>Duration: {{ playlist_duration|sec_to_hhmmss }}</li>
-                    </ul>
-                </div>
-            </div>
+        <header class="playlist-info" style="
+            background-image: url(&quot;/static/user/imgs/3.jfif&quot;);
+            background-size: cover;
+            flex-direction: column;
+            justify-items: flex-end;
+            flex-wrap: wrap;
+            flex: 1;
+            align-content: flex-start;
+        "> 
+            <h1 id="playlist-name" style="margin: 4.3rem 0 0 0;">One Republic</h1>
+            <span>2,656,535 monthly listeners</span>
         </header>
         <div class="shortcuts">
-            <span class="btn play-playlist ri-play-circle-fill"></span>
-            <span class="btn heart-playlist ri-heart-line"></span>
-            <span class="btn">...</span>
+                    <span class="btn play-playlist ri-play-circle-fill"></span>
+                    <span class="btn" style="
+                        border: 1px solid white;
+                        padding: 0.5rem;
+                        border-radius: 5px;
+                    ">Following or Follow</span>
+                    <span class="btn">...</span>
         </div>
         <div class="playlist-add display-none">
             <form action="" method="POST">
@@ -42,58 +45,64 @@
                             {{ playlist.name }}
                         </p>
                     {% endfor %}
-                    {% comment %}<input type="submit" name="Ok" hidden>{% endcomment %}
                 </div>
             </form>
         </div>
-        <div class="tracks-list">
-            <ul class="tracks">
-                <li class="header-row">
-                    <span class="index" id="track-num">#</span>
-                    <span>Title</span>
-                    <span class="queue-this">&nbsp;</span>
-                    <span class="playlist-this">&nbsp;</span>
-                    <span class="album">Album</span>
-                    <span class="date-added">Date Added</span>
-                    <span class="heart">&nbsp;</span>
-                    <span class="track-duration">Duration</span>
-                </li>
-                {% for track in current_playlist.tracks.all %}
-                    <li class="" data-track-id="{{ track.id }}">
-                        <div class="index">
-                            <span>{{ forloop.counter }}</span>
-                            <i class="hover btn play-this ri-play-circle-fill"></i>
-                        </div>
-                        <div class="track-artist">
-                            
-                            <img src="/static/user/imgs/34.jfif">
-                            <div class="">
-                                <span>{{ track.title }}</span>
-                                {% with main_artist=track.artist.all|first %}
-                                    <span>
-                                        <a href="{% url 'artist:index' main_artist.id %}">{{ main_artist.get_full_name }}</a>
-                                    </span>
-                                {% endwith %}
-                            </div>
-                        </div>
-                        <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
-                        <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
-                        <span class="album" aria-label="album">
-                            <a href="{% url 'album:index' track.album.id %}">{{ track.album.title }}</a>
-                        </span>
-                        <span class="date-added" aria-label="date-added">{{ track.created_at|date:"M d, Y" }}</span>
-                        {% if track in curr_user.favourites.all %}
-                            <span class="btn heart ri-heart-3-fill"></span>
-                        {% else %}
-                            <span class="btn heart ri-heart-3-line"></span>
-                        {% endif %}
-                        <span class="track-duration" aria-label="track-duration">{{ track.duration|sec_to_hhmmss }}</span>
-                    </li>
-                
-                {% endfor %}
-            </ul>
-        </div>
+        <section>
+            {% for head, tracks in track_categories.items %}
+                <h2>Popular</h2>
+                <div class="tracks-list">
+                    <ul class="tracks">
+                        <li class="header-row">
+                            <span class="index" id="track-num">#</span>
+                            <span>Title</span>
+                            <span class="queue-this">&nbsp;</span>
+                            <span class="playlist-this">&nbsp;</span>
+                            <span class="album">Streams</span>
+                            <span class="date-added">Released</span>
+                            <span class="heart">&nbsp;</span>
+                            <span class="track-duration">Duration</span>
+                        </li>
+                        {% for track in tracks %}
+                            <li class="" data-track-id="{{ track.id }}">
+                                <div class="index">
+                                    <span>{{ forloop.counter }}</span>
+                                    <i class="hover btn play-this ri-play-circle-fill"></i>
+                                </div>
+                                <div class="track-artist">
+                                    <img src="/static/user/imgs/34.jfif">
+                                    <div class="">
+                                        <span>{{ track.title }}</span>
+                                    </div>
+                                </div>
+                                <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
+                                <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
+                                <span class="album" aria-label="album">
+                                    <a href="#">{{ track.total_streams }}</a>
+                                </span>
+                                <span class="date-added" aria-label="date-added">
+                                    {{ track.released_at|date:"M d, Y" }}
+                                </span>
+                                {% if track in curr_user.favourites.all %}
+                                    <span class="btn heart ri-heart-3-fill"></span>
+                                {% else %}
+                                    <span class="btn heart ri-heart-3-line"></span>
+                                {% endif %}
+                                <span class="track-duration" aria-label="track-duration">{{ track.duration|sec_to_hhmmss }}</span>
+                            </li>
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </section>
+        <section>
+            {% include 'album/album_cards.html' with album_categories=album_categories only %}
+            </div>
+        </section>
+        
     </div>
+</div>
 {% endblock content %}
 
 {% block bottom_js %}

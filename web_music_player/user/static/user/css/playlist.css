@@ -81,7 +81,7 @@ header {
 ul.tracks {padding: 0}
 
 #track-num {
-    justify-self: flex-end;
+    /*justify-self: flex-end;*/
 }
 
 .tracks li, .header-row {
@@ -128,6 +128,7 @@ ul.tracks {padding: 0}
     display: flex;
     gap: 1rem;
     align-items: center;
+    margin: 1rem 0;
 }
 
 .playlist-add {

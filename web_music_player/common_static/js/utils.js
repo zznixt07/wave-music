@@ -5,7 +5,7 @@ function randomInt(min, max) {
 
 // returns the class added
 function toggleClass(elem, cls1, cls2) {
-    classes = elem.classList
+    const classes = elem.classList
     if (Array.from(classes).indexOf(cls1) !== -1) {
         classes.remove(cls1)
         classes.add(cls2)

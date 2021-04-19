@@ -13,5 +13,11 @@ from user.models import Playlist, Userbase, Track
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-def index(request, artist_id):
+def index(request, album_id):
     return JsonResponse({})
+
+def get_track_ids(request, album_id):
+    return JsonResponse([
+        t.id for t in Track.objects.filter(album__id=album_id)
+    ], safe=False)
+

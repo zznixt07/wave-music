@@ -59,4 +59,6 @@ class OwnPasswordChangeView(auth_views.PasswordChangeView):
     # form_class = UserUpdateForm
     # success_url = reverse_lazy('account:login')
 
-
+class OwnPasswordChangeDoneView(auth_views.PasswordChangeDoneView):
+    template_name = 'account/passwordChanged.html'
+    extra_content = {}

@@ -4,6 +4,9 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
+from account.views import OwnPasswordChangeDoneView
+import debug_toolbar
+
 
 urlpatterns = [
     path('', include('user.urls', namespace='user')),
@@ -13,7 +16,10 @@ urlpatterns = [
     path('track/', include('track.urls', namespace='track')),
     path('album/', include('album.urls', namespace='album')),
     path('artist/', include('artist.urls', namespace='artist')),
+    path('password_change_done/', OwnPasswordChangeDoneView.as_view(), name='password_change_done'),
 ]
+urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+
 # ] + [
 #     re_path(
 #         r'^%s(?P<path>.*)$' % settings.STATIC_URL[1:], 

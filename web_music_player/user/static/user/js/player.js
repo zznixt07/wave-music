@@ -1,4 +1,25 @@
+import { spectrum } from './oscillator.js'
 
+function randomInt(min, max) {
+    // [min-max)
+    return Math.floor(Math.random() * (max - min)) + min
+}
+
+// returns the class added
+function toggleClass(elem, cls1, cls2) {
+    const classes = elem.classList
+    if (Array.from(classes).indexOf(cls1) !== -1) {
+        classes.remove(cls1)
+        classes.add(cls2)
+        return cls2
+    }
+    // below:: using if is different than using else
+    else {
+        classes.remove(cls2)
+        classes.add(cls1)
+        return cls1
+    }
+}
 
 // import {Rythm} from './rythm.js'
 
@@ -27,9 +48,26 @@ document.querySelector('.aplayer .aplayer-info').insertAdjacentHTML(
         <button class="prev-track ri-skip-back-fill"></button>
         <button class="play-or-pause-track ri-play-circle-fill"></button>
         <button class="next-track ri-skip-forward-fill"></button>
+        <button style="font-size: 120%;" class="spectrum ri-magic-line"></button>
     </div>`
 )
 
+const magic = document.querySelector('.spectrum')
+const canvas = document.querySelector('canvas')
+let visualized = false
+magic.addEventListener('click', () => {
+    const added = toggleClass(magic, 'ri-magic-line', 'ri-magic-fill')
+    
+    if (added === 'ri-magic-fill') {
+        canvas.style.display = 'block'
+        if (visualized) return
+        visualized = true;
+        spectrum(0.8, player.audio)
+    }
+    else {
+        canvas.style.display = 'none'
+    }
+})
 
 document.querySelector('.prev-track').addEventListener('click', () => player.skipBack())
 document.querySelector('.next-track').addEventListener('click', () => player.skipForward())
@@ -73,19 +111,14 @@ function addToQueue(tracks) {
 }
 
 function playTrack(track) {
-    player = new APlayer({
-        container: container,
-        listFolded: false,
-        listMaxHeight: 90,
-        audio: [
-            {
-                name: track.title,
-                artist: Object.values(track.artists[0])[0],
-                url: 'media/' + track.audio_url,
-                cover: 'media/' + track.image_url,
-            },
-        ],
-    })
+    
+    player.list.add([{
+        name: track.title,
+        artist: Object.values(track.artists[0])[0],
+        url: 'media/' + track.audio_url,
+        cover: 'media/' + track.image_url,
+    }])
+
     player.play()
 }
 
@@ -101,12 +134,12 @@ window.addEventListener('message', async (event) => {
     // }, event.origin)
     console.log("data from iframe :", data)
 
+    if (data.clearQueue) player.list.clear()
     if (data.type === 'playTrack') {
         const trackDetails = await getTrack(data.track.id)
         playTrack(trackDetails)
     }
     else if (data.type == 'queueTracks') {
-        if (data.clearQueue) player.list.clear()
         const tracks = []
         for (const track of data.tracks) {
             if (track.hasOwnProperty('id')) {
@@ -116,3 +149,5 @@ window.addEventListener('message', async (event) => {
         addToQueue(tracks)
     }
 })
+
+

@@ -1,0 +1,19 @@
+{% for head, albums in album_categories.items %}
+    <h3>{{ head }}</h3>
+    <div class="summary-cards">
+        {% for album in albums %}
+            <div class="my-card" data-album-id="{{ album.id }}">
+                <a href= {% url 'album:index' album.id %}>
+                    <div class="cover" aria-label="Album's cover image">
+                        <img src="{{ album.cover_image.url }}">
+                        <i data-album-id="{{ album.id }}" class="hover-play-card ri-play-mini-line"></i>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">{{ album.title }}</h4>
+                        <div>By {{ album.artist.all|join:" and " }}</div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}

@@ -39,6 +39,10 @@ class Profile(User):
         #     img.thumbnail(output_size)
         #     img.save(self.profile_pic.path)
 
+    class Meta:
+        verbose_name = 'Profile'
+        verbose_name_plural = 'Profiles'
+
 class Userbase(Profile):
     plan_type = models.CharField(max_length=10, default='free')
     favourites = models.ManyToManyField('Track', through='FavouritesTracks')
@@ -46,12 +50,24 @@ class Userbase(Profile):
     followers = models.ManyToManyField('self', symmetrical=False, through='Followers',)
     # not symmetrical. If A follows B, then B doesn't neccessarly follow A.
 
+    class Meta:
+        verbose_name = 'Userbase'
+        verbose_name_plural = 'Userbase'
+
 class Adminbase(Profile):
     level = models.CharField(max_length=1)
+
+    class Meta:
+        verbose_name = 'Adminbase'
+        verbose_name_plural = 'Adminbase'
     
 class Artist(Userbase):
     # secondary_images = models.ImageField(upload_to=f'artist_sec/{self.id}/', blank=True, null=False, default='')
     social_links = models.CharField(max_length=100, null=False, blank=True, default='')
+
+    class Meta:
+        verbose_name = 'Artist'
+        verbose_name_plural = 'Artists'
 
 class Album(models.Model):
     title = models.CharField(max_length=200)
@@ -128,6 +144,7 @@ class Playlist(models.Model):
     def __str__(self):
         return self.name + ' by ' + str(self.owner.get().username)
 
+
 # class PlaylistCategory(models.Model):
 #     name = models.CharField(max_length=50, default='', null=False, blank=True)
 
@@ -146,6 +163,10 @@ class Followers(models.Model):
     def __str__(self):
         return f'leader: {self.leader.username} | follower: {self.follower.username}'
 
+    class Meta:
+        verbose_name = 'Follower'
+        verbose_name_plural = 'Follower'
+
 class UserbasePlaylists(models.Model):
     write = models.BooleanField('whether user can edit playlists or not')
     userbase = models.ForeignKey('Userbase', on_delete=models.CASCADE)
@@ -154,16 +175,27 @@ class UserbasePlaylists(models.Model):
     def __str__(self):
         return f'{self.userbase.username} | {self.playlists.name}'
 
+    class Meta:
+        verbose_name = 'UserbasePlaylist'
+        verbose_name_plural = 'UserbasePlaylists'
+
 class FavouritesTracks(models.Model):
     tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
     added_at = models.DateTimeField(default=aware_utc_now)
     user = models.ForeignKey('Userbase', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'FavouritesTrack'
+        verbose_name_plural = 'FavouritesTracks'
 
 class TrackPlaylists(models.Model):
     tracks = models.ForeignKey('Track', on_delete=models.CASCADE)
     added_at = models.DateTimeField(default=aware_utc_now)
     playlists = models.ForeignKey('Playlist', on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'TrackPlaylist'
+        verbose_name_plural = 'TrackPlaylists'
 
 # class Lyrics(models.Model):
 #     content = models.FileField(upload_to='lyrics/')

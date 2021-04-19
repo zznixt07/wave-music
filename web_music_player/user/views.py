@@ -48,10 +48,15 @@ def browse(request):
     albums = {}
     albums['New Releases'] = Album.objects.all().order_by('-released_at')
 
+    songs = {}
+    songs['Music by genres'] = []
+    songs['The 90s'] = []
+
     context = {
         'playlist_categories': categories,
         'album_categories': albums,
         'artist_categories': artists,
+        'songs_categories': songs,
         'Favourite': curr_user.favourites.all(),
     }
 

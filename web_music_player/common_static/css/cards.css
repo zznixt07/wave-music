@@ -1,0 +1,112 @@
+
+.summary-cards {
+    display: grid;
+    column-gap: 20px;
+    grid-auto-rows: 0;
+    grid-template-rows: 1fr;
+    /*grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));*/
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    overflow-y: hidden;
+    justify-items: center;
+    /*align-items: flex-end;*/
+}
+
+.my-card {
+    width: 100%;
+    /*max-width: 200px;*/
+    /*background-color: #b3b3b3;*/
+    padding: 0.7rem;
+}
+
+.my-card a {
+    text-decoration: none;
+    color: var(--primary-text-color);
+}
+
+.my-card .cover {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.my-card img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.hover-play-card {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 300%;
+    border-radius: 50%;
+}
+.my-card:hover img {
+    filter: brightness(0.25);
+}
+.cover img:hover+.hover-play-card {
+    display: block;
+}
+
+.hover-play-card:hover {
+    display: block;
+    background-color: var(--secondary-color);
+}
+
+.card-info > * {
+    margin: 0.55rem auto;
+    overflow: hidden;
+}
+
+.card-info div {
+    height: 50px;
+    line-height: 1.1rem;
+}
+
+.card-info .title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0 auto;
+}
+
+.artist-card .my-card {
+    background-color: var(--player-primary-color);
+}
+
+/*.artist-card .my-card:hover {
+    background-color: rgb(37, 36, 39);
+}*/
+
+.artist-card .my-card:hover img {
+    /*filter: none;*/
+}
+
+@media screen and (min-width: 600px) and (max-width: 900px) {
+    .summary-cards {
+        /*grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));*/
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        column-gap: 10px;
+    }
+
+    .my-card {
+        width: 120px;
+        padding: 0;
+    }
+     aside {
+        display: initial;
+     }
+}
+
+@media screen and (max-width: 600px) {
+    .summary-cards {
+        /*grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));*/
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        column-gap: 3px;
+    }
+
+    .my-card {
+        width: 80px;
+        padding: 0;
+    }
+}

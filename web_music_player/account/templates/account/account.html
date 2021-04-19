@@ -31,9 +31,9 @@
                                 {% comment %}<i class="toggle-pswd ri-eye-line"></i>{% endcomment %}
                             </div>
                             <li class="submit-btn">
-                                <a href="#">
+                                <a href="{% url 'account:password' %}">
                                     <input type="" value="Change password" readonly 
-                                            style="text-align: center; cursor: pointer;">
+                                        style="text-align: center; cursor: pointer;">
                                 </a>
                             </li>
                         <small>{{ form.password.errors }}</small>
