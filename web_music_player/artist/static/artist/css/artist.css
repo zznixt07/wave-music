@@ -1,12 +1,13 @@
 .playlist-info {
-    background-image: url("/static/user/imgs/3.jfif");
-    background-size: cover;
+    /*background-size: cover;*/
+    background-size: contain;
     flex-direction: column;
     justify-items: flex-end;
     flex-wrap: wrap;
     flex: 1;
     align-content: flex-start;
     padding: 0.5rem;
+    min-height: 250px;
 }
 
 .playlist-name {

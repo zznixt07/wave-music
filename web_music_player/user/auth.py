@@ -1,17 +1,13 @@
 from django.contrib.auth.backends import BaseBackend
 
-# admin.site.register(User, UserAdmin)
-# AUTH_USER_MODEL = 'user.MyUser'
-
-class MyBackend(BaseBackend):
-    def authenticate(self, request, username=None, password=None):
-        # Check the username/password and return a user.
-
-# models.py
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+
+# admin.site.register(User, UserAdmin)
+# AUTH_USER_MODEL = 'user.MyUser'
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password=None):
@@ -44,6 +40,8 @@ class MyUserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
+
 
 
 class MyUser(AbstractBaseUser):
@@ -79,3 +77,29 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+
+
+
+from django.http import HttpResponse
+from django.shortcuts import redirect
+
+
+# custom decorators 
+def unauthenticated_user(view_function):
+    def wrapper_function(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('/browse')
+        else:
+            return view_function(request, *args, **kwargs)
+    return wrapper_function
+
+
+def admin_only(view_function):
+    def wrapper_function(request, *args, **kwargs):
+        if request.user.is_superuser:
+            return view_function(request, *args, **kwargs)
+        else:
+            return redirect('/browse')
+    return wrapper_function

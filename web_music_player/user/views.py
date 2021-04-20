@@ -35,6 +35,7 @@ def get_tracks_in_playlist(playlist):
 def browse(request):
     playlists = Playlist.objects.all()
     curr_user = Userbase.objects.get(id=request.user.id)
+    
     categories: Dict[str, List['QuerySet']] = {}
     categories['Recently Played'] = Playlist.objects.filter(owner__id=curr_user.id) \
                                     .order_by('-last_played_at')

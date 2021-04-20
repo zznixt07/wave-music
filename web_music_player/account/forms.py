@@ -1,16 +1,18 @@
 from django import forms
 from user.models import Userbase, Profile
+from django.contrib.auth.forms import UserCreationForm
 
-
+# class UserSignupForm(UserCreationForm):
 class UserSignupForm(forms.ModelForm):
     accept_t_and_c = forms.BooleanField(label='', required=True)
 
     class Meta:
-        model = Profile
+        model = Userbase
         fields = [
             'username', 'password', 'first_name', 'last_name',
             'email', 'country', 'gender', 'age',
         ]
+        # exclude = ['date_joined']
         widgets = {
             'email': forms.TextInput(attrs={'placeholder': 'E-mail Address'}),
             'username': forms.TextInput(attrs={'placeholder': 'Username'}),
@@ -41,7 +43,7 @@ class UserLoginForm(forms.ModelForm):
     remember_me = forms.BooleanField(label='Remember Me', required=False)
     
     class Meta:
-        model = Profile
+        model = Userbase
         fields = ['username', 'password']
         widgets = {
             'username': forms.TextInput(attrs={'placeholder': 'Username'}),

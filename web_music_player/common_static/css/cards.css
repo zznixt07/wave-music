@@ -29,8 +29,17 @@
 }
 
 .my-card img {
-    width: 100%;
+    max-width: 300px;
     object-fit: cover;
+    width: 150px;
+    height: 150px;
+}
+@media screen and (max-width: 800px) {
+    .my-card img {
+        width: 80px;
+        height: 80px;
+    }
+
 }
 
 .my-card img:hover {
@@ -77,12 +86,12 @@
 @media screen and (min-width: 600px) and (max-width: 900px) {
     .summary-cards {
         /*grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));*/
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         column-gap: 10px;
     }
 
     .my-card {
-        width: 120px;
+        width: 130px;
         padding: 0;
     }
      aside {
@@ -93,7 +102,7 @@
 @media screen and (max-width: 600px) {
     .summary-cards {
         /*grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));*/
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         column-gap: 3px;
     }
 

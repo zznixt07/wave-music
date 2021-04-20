@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
 from account.views import OwnPasswordChangeDoneView
-import debug_toolbar
+
 
 
 urlpatterns = [
@@ -17,8 +17,9 @@ urlpatterns = [
     path('album/', include('album.urls', namespace='album')),
     path('artist/', include('artist.urls', namespace='artist')),
     path('password_change_done/', OwnPasswordChangeDoneView.as_view(), name='password_change_done'),
+    path('admin-dashboard/', include('admin.urls')),
 ]
-urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+
 
 # ] + [
 #     re_path(

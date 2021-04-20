@@ -3,7 +3,8 @@ from . import views
 
 app_name = 'site_account'
 urlpatterns = [
-    path('signup/', views.OwnSignupView.as_view(), name='signup'),
+    # path('signup/', views.OwnSignupView.as_view(), name='signup'),
+    path('signup/', views.register, name='signup'),
     path('login/', views.OwnLoginView.as_view(), name='login'),
     path('logout/', views.OwnLogoutView.as_view(), name='logout'),
     path('update/<int:pk>', views.OwnAccountUpdateView.as_view(), name='update'),

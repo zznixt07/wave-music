@@ -16,7 +16,7 @@ def aware_utc_now():
 class Profile(User):
     description = models.TextField(max_length=2000, blank=True)
     country = models.CharField(max_length=50, blank=True, choices=COUNTRIES, default='US')
-    profile_pic = models.ImageField(upload_to=f'userbase/', blank=True, null=False, default='')
+    profile_pic = models.ImageField(upload_to=f'userbase/',  default='userbase/default.jpg')
     gender = models.CharField(max_length=20, choices=GENDER, blank=True, default='', null=False)
     age = models.PositiveSmallIntegerField(validators=[MaxValueValidator(150)], default=None, null=True)
 
@@ -24,7 +24,7 @@ class Profile(User):
         return f'{self.first_name} {self.last_name}'
 
     def save(self, *args, **kwargs):
-        # print(repr(self.profile_pic.path))
+        print(repr(self.profile_pic.path))
         with open(self.profile_pic.path, 'rb') as file:
             self.profile_pic.save(
                 os.path.basename(self.profile_pic.path),
@@ -62,7 +62,7 @@ class Adminbase(Profile):
         verbose_name_plural = 'Adminbase'
     
 class Artist(Userbase):
-    # secondary_images = models.ImageField(upload_to=f'artist_sec/{self.id}/', blank=True, null=False, default='')
+    # secondary_images = models.ImageField(upload_to=f'artist_sec/{self.id}/', blank=True, null=False,default='userbase/default.jpg')
     social_links = models.CharField(max_length=100, null=False, blank=True, default='')
 
     class Meta:
@@ -73,7 +73,7 @@ class Album(models.Model):
     title = models.CharField(max_length=200)
     released_at = models.DateTimeField(null=True)
     album_type = models.CharField('album or single', max_length=10)
-    cover_image = models.ImageField(upload_to='album_covers/')
+    cover_image = models.ImageField(upload_to='album_covers/', default='userbase/default.jpg')
     artist = models.ManyToManyField('Artist')
 
     def __str__(self):
@@ -97,7 +97,7 @@ class Track(models.Model):
     explicit = models.BooleanField()
     created_at = models.DateTimeField('date when the track was uploaded', default=aware_utc_now)
     total_streams = models.PositiveIntegerField()
-    cover_image = models.ImageField(upload_to='track_covers/')
+    cover_image = models.ImageField(upload_to='track_covers/', default='userbase/default.jpg')
     location = models.FileField(upload_to='track_audio/')
     album = models.ForeignKey('Album', on_delete=models.CASCADE, blank=False, null=True)
     artist = models.ManyToManyField('Artist')
@@ -133,6 +133,7 @@ class Playlist(models.Model):
     removable = models.BooleanField(default=True)
     times_played = models.PositiveIntegerField(default=0)
     last_played_at = models.DateTimeField(default=aware_utc_now)
+    cover_image = models.ImageField(upload_to='playlist_covers/', default='userbase/default.jpg')
     # below field is not updated when calling .update() on other fields
     # only auto updated when calling .save()
     last_modified_at = models.DateTimeField(auto_now=True,
@@ -210,23 +211,90 @@ python manage.py reset_db && python manage.py makemigrations && python manage.py
 
 from datetime import datetime, timezone
 dt = datetime.now(timezone.utc)
+from random import randint
+
+def rand_dt():
+    return datetime(year=randint(2009, 2021), month=randint(1, 12), day=randint(1, 29), hour=randint(0, 23), minute=randint(0, 59), tzinfo=timezone.utc)
+
 
 pp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\web_app\\web_music_player\\media\\15.jfif"
 tp = "C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\web_app\\web_music_player\\media\\walking.webm"
 
+media_loc = 'C:\\Users\\zznixt\\OneDrive\\innit_perhaps\\django_app\\web_app\\web_music_player\\media\\'
+track_loc = media_loc + 'track_audio - Copy'  + "\\"
+album_cov_loc = media_loc + 'album_covers - Copy' + "\\"
+track_cov_loc = media_loc + 'track_covers - Copy' + "\\"
+user_loc = media_loc + 'userbase - Copy' + "\\"
+playlist_loc = media_loc + 'playlist_covers - Copy' + "\\"
+
+pp_list = {'1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.png', 'ab67706f0000000221a2087747d946f16704b8af.jfif', 'ab67706f000000022beb4afd7fe086b75229de46.jfif', 'ab67706f000000023e83e977187d7c77d8d6b9aa.jfif', 'ab67706f0000000245a5db34be4a2f006c08284a.jfif', 'ab67706f0000000250e0321a50e940a674b6444e.jfif', 'ab67706f00000002519fc8771d90f496501a4da3.jfif', 'ab67706f000000027600f8bae4006faffdfc08ce.jfif', 'ab67706f000000028663be06e69f49628cf83a56.jfif', 'ab67706f0000000287972ceeccc8fea92cd21af5.jfif', 'ab67706f0000000291208168c4d7591ce5c87651.jfif', 'ab67706f000000029c0fc8e6c8b620e72661efa9.jfif', 'ab67706f00000002ba77a2166a7b66e9a300ffaa.jfif', 'ab67706f00000002bbf7afae234cf3c684ec7b4f.jfif', 'ab67706f00000002ca64210a23622427ec19c4a6.jfif', 'ab67706f00000002cf8e264c6a92e245402ecb7a.jfif', 'ab67706f00000002cfb9853b43822a01fe707f9a.jfif', 'ab67706f00000002d8c915eea90d28e9bb70f550.jfif', 'ab67706f00000002e6f455f80fe9b1636349ce76.jfif', 'ab67706f000000031be7c010773575779a1feef6.jpg', 'default (1).jfif', 'default (2).jfif', 'default (3).jfif', 'default (4).jfif', 'default.jfif', 'default.jpg', 'PZN_On_Repeat2_DEFAULT-en.jpg', 'PZN_Repeat_Rewind2_DEFAULT-en.jpg', 'time-capsule-blue_DEFAULT-en.jpg'}
+
+def rand_profile_pic():
+    return  playlist_loc + pp_list.pop()
+
 # // create user in DB
-zznix = Userbase.objects.create_user(first_name='Nisan', last_name='Thapa', gender='male', age=20, profile_pic=pp, username='zznix', password='1234')
-kells = Userbase.objects.create_user(first_name='Nischal', last_name='Khatri', gender='male', age=20, profile_pic=pp, username='kells', password='1234')
-lekha = Userbase.objects.create_user(first_name='Kamala', last_name='Thapa',gender='female', age=44, profile_pic=pp, username='lekha', password='brt')
+zznix = Userbase.objects.create_user(first_name='Nisan', last_name='Thapa', gender='male', age=20, profile_pic=rand_profile_pic(), username='zznix', password='1234567890!@#')
+shailesh = Userbase.objects.create_user(first_name='Shailesh', last_name='Giri', gender='male', age=22, profile_pic=rand_profile_pic(), username='@10zer', password='1234567890!@#')
+kells = Userbase.objects.create_user(first_name='Nischal', last_name='Khatri', gender='male', age=20, profile_pic=rand_profile_pic(), username='kells', password='1234567890!@#')
+lekha = Userbase.objects.create_user(first_name='Kamala', last_name='Thapa',gender='female', age=44, profile_pic=rand_profile_pic(), username='lekha', password='brt!@#brt')
+galzin = Userbase.objects.create_user(first_name='Phurba Gyalen', last_name='Sherpa',gender='male', age=21, profile_pic=rand_profile_pic(), username='pgal', password='qwertyyuiop!@#')
+sunil = Userbase.objects.create_user(first_name='Sunil', last_name='Tamang',gender='male', age=22, profile_pic=rand_profile_pic(), username='tech_tmg', password='qwertyyuiop!@#')
+sanjib = Userbase.objects.create_user(first_name='Sanjib', last_name='Limbu',gender='male', age=18, profile_pic=rand_profile_pic(), username='eyes_', password='qwertyyuiop!@#')
+raj = Userbase.objects.create_user(first_name='Raj', last_name='Sapkota',gender='male', age=16, profile_pic=rand_profile_pic(), username='sm_hght', password='qwertyyuiop!@#')
+pramod = Userbase.objects.create_user(first_name='Pramod', last_name='Timilsina',gender='male', age=50, profile_pic=rand_profile_pic(), username='tm_pramod_t', password='qwertyyuiop!@#')
+
 
 # // add followers to a user
-zznix.followers.add(lekha, kells)
+zznix.followers.add(lekha, kells, shailesh, galzin, sunil, raj)
 kells.followers.add(zznix)
+shailesh.followers.add(raj)
+sunil.followers.add(galzin)
+galzin.followers.add(pramod, sunil, shailesh)
+
+
+# // add artists to DB
+pilots = Artist.objects.create_user(first_name='21 Pilots', profile_pic=user_loc+'3.jfif', username='21p', password='kjhKJGU%^$75',)
+ryan = Artist.objects.create_user(first_name='Ryan', last_name='Tedder', gender='male', profile_pic=user_loc+'1.jpg', username='rtedder', password='kjhKJGU%^$75',)
+one_r = Artist.objects.create_user(first_name='One Republic', profile_pic=user_loc+'13.jfif', username='@1Rp', password='kjhKJGU%^$75',)
+tyler = Artist.objects.create_user(first_name='Tyler',gender='male', last_name='lyle', profile_pic=user_loc+'5.jfif', username='tyler_lyle', password='kjhKJGU%^$75',)
+andrew = Artist.objects.create_user(first_name='Andrew', gender='male', last_name='Bird', profile_pic=user_loc+'7.jfif', username='bird_andrew', password='kjhKJGU%^$75',)
+galantis = Artist.objects.create_user(first_name='Galantis', gender='female', profile_pic=user_loc+'9.jfif', username='@galantis', password='kjhKJGU%^$75',)
+midnight = Artist.objects.create_user(first_name='The Midnight', gender='female', profile_pic=user_loc+'12.jfif', username='theMidnight', password='kjhKJGU%^$75',)
+wknd = Artist.objects.create_user(first_name='The Weekend', gender='male', profile_pic=user_loc+'11.jfif', username='theweekend', password='kjhKJGU%^$75',)
+
+users = {zznix, shailesh, kells, lekha, galzin, sunil, sanjib, raj, pramod, pilots, ryan, one_r, tyler, andrew, galantis, midnight, wknd,}
+
+# // add followers to artists (same as above-above)
+pilots.followers.add(zznix, kells)
+one_r.followers.add(zznix)
+andrew.followers.add(kells, lekha)
+galantis.followers.add(lekha)
+midnight.followers.add(kells)
 
 # // create playlist in DB
-deez = Playlist.objects.create(name='deezloaderz', description='soundiiz')
-catchy = Playlist.objects.create(name='catchy', description='kells playlist',)
-nword = Playlist.objects.create(name='Nostalgic Songs', description='Songs from 80\'s and 90\'s')
+deez = Playlist.objects.create(name='deezloaderz', description='soundiiz', privacy_level='pub', sort_by='date', cover_image=playlist_loc+'PZN_On_Repeat2_DEFAULT-en.jpg')
+catchy = Playlist.objects.create(name='catchy', description='kells playlist', privacy_level='pub', sort_by='date', cover_image=playlist_loc+'time-capsule-blue_DEFAULT-en.jpg')
+nword = Playlist.objects.create(name='Nostalgic Songs', description='Songs from 80\'s and 90\'s', cover_image=playlist_loc+'default.jfif')
+
+lst = [
+('Life is a Dream - mellow lofi beats to relax to', 'Mellow / jazzy lo-fi hip hop beats to study, relax, sleep, game to. Curated by Birdhouse. IG: @birdhouse.'),
+('Most Streamed Songs of the Decade', 'Top streaming songs from each year in the 10s.'),
+('US Summer Hits of the 10s', 'Songs from the last decade that will make you sing and dance all summer long!'),
+('Discover Weekly', 'Your weekly mixtape of fresh music. Enjoy new music and deep cuts picked for you. Updates every Monday.'),
+('Chill Hits', 'Kick back to the best new and recent chill tunes.'),
+('Hit Repeat', 'The hits you keep coming back to.'),
+('Best of the Decade', '100 popular tracks from the past 10 years.'),
+('10s Pop Run', '2010s pop to get those legs moving!'),
+('Rock Classics', 'Rock legends and epic songs that continue to inspire generations.'),
+('Mega Hit Mix', 'A mega mix of 75 of your favorite songs from the last few years! Cover: Dua Lipa'),
+('Top Gaming Tracks', 'The tracks that gamers love.'),
+('Positive Vibes', 'Turn that frown upside down with these pop classics.'),
+('Disney Hits', 'All your favorite Disney hits. Disney’s Raya and the Last Dragon, in theaters now or order it on Disney+ with Premier Access. Additional fee required.'),
+]
+
+for infos in lst:
+    pl = Playlist.objects.create(name=infos[0], description=infos[1], cover_image=rand_profile_pic())
+    pl.owner.add(users.pop())
 
 # // add a owner to a playlist.
 deez.owner.add(zznix)
@@ -238,43 +306,33 @@ lekha.playlists.add(deez, through_defaults={'write': True})
 kells.playlists.add(deez, through_defaults={'write': False})
 zznix.playlists.add(catchy, through_defaults={'write': False})
 
-# // add artists to DB
-pilots = Artist.objects.create_user(first_name='21 Pilots', profile_pic=pp, username='21p', password='00',)
-ryan = Artist.objects.create_user(first_name='Ryan', last_name='Tedder', gender='male', profile_pic=pp, username='rtedder', password='00',)
-one_r = Artist.objects.create_user(first_name='One Republic', profile_pic=pp, username='@1Rp', password='00',)
-tyler = Artist.objects.create_user(first_name='Tyler',gender='male', last_name='lyle', profile_pic=pp, username='tyler_lyle', password='00',)
-andrew = Artist.objects.create_user(first_name='Andrew', gender='male', last_name='Bird', profile_pic=pp, username='bird_andrew', password='00',)
-galantis = Artist.objects.create_user(first_name='Galantis', gender='female', profile_pic=pp, username='@galantis', password='00',)
-midnight = Artist.objects.create_user(first_name='The Midnight', gender='female', profile_pic=pp, username='theMidnight', password='00',)
-
-# // add followers to artists (same as above-above)
-pilots.followers.add(zznix, kells)
-one_r.followers.add(zznix)
-andrew.followers.add(kells, lekha)
-galantis.followers.add(lekha)
-midnight.followers.add(kells)
-
 # // add albums to DB
-a1 = Album.objects.create(title='BlurryFace', released_at=dt, album_type='single', cover_image=pp)
-a2 = Album.objects.create(title='Oh my my', released_at=dt, album_type='single', cover_image=pp)
-a3 = Album.objects.create(title='My finest work yet', released_at=dt, album_type='single', cover_image=pp)
-a4 = Album.objects.create(title='Naive', released_at=dt, album_type='album', cover_image=pp)
-a5 = Album.objects.create(title='Bones', released_at=dt, album_type='album', cover_image=pp)
+blur = Album.objects.create(title='BlurryFace', released_at=rand_dt(), album_type='single', cover_image=album_cov_loc+'2.jpg')
+ohmymy = Album.objects.create(title='Oh my my', released_at=rand_dt(), album_type='single', cover_image=album_cov_loc+'5.jfif')
+fine = Album.objects.create(title='My finest work yet', released_at=rand_dt(), album_type='single', cover_image=album_cov_loc+'7.jfif')
+naive = Album.objects.create(title='Naive', released_at=rand_dt(), album_type='album', cover_image=album_cov_loc+'1.jpg')
+bone = Album.objects.create(title='Bones', released_at=rand_dt(), album_type='album', cover_image=album_cov_loc+'8.jfif')
+general = Album.objects.create(title='Gen', released_at=rand_dt(), album_type='Single', cover_image=album_cov_loc+'4.jpg')
 
 # // add artist(s) to album
-a1.artist.add(pilots)
-a2.artist.add(one_r)
-a3.artist.add(andrew)
-a4.artist.add(one_r)
-a5.artist.add(one_r, galantis)
+blur.artist.add(pilots)
+ohmymy.artist.add(one_r)
+fine.artist.add(andrew)
+naive.artist.add(one_r)
+bone.artist.add(one_r, galantis)
+general.artist.add(wknd)
 
 # // add tracks to DB (album is optional)
-tear = Track.objects.create(title='Tear in my heart', album=a1, genre='rock', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
-stars = Track.objects.create(title='Counting Stars', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
-sisyephus = Track.objects.create(title='Sisyephus', album=a3, genre='', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
-bones = Track.objects.create(title='Bones', album=a5, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
-stressed_out = Track.objects.create(title='Stressed Out', album=a1, genre='rock', released_at=dt, duration=5, explicit=False, created_at=dt, total_streams=100, cover_image=pp, location=tp)
-smth_i_need = Track.objects.create(title='Something I need', album=a4, genre='pop', released_at=dt, duration=4, explicit=False, created_at=dt, total_streams=21, cover_image=pp, location=tp)
+tear = Track.objects.create(title='Tear in my heart', album=blur, genre='rock', released_at=rand_dt(), duration=200, explicit=True, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'5.jfif', location=track_loc+'005-twenty_one_pilots-tear_in_my_heart.mp3')
+level = Track.objects.create(title='Level of concern', album=blur, genre='pop', released_at=rand_dt(), duration=170, explicit=False, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'4.jfif', location=track_loc+'smth.mp3')
+stressed_out = Track.objects.create(title='Stressed Out', album=blur, genre='rock', released_at=rand_dt(), duration=250, explicit=True, created_at=rand_dt(), total_streams=100, cover_image=track_cov_loc+'2.jpg', location=track_loc+'Guns for hands - Twenty one pilots (Lyrics_) aIJUGZ474HY.m4a')
+bones = Track.objects.create(title='Bones', album=bone, genre='pop', released_at=rand_dt(), duration=300, explicit=False, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'1.jpg', location=track_loc+'bones.mp3')
+stars = Track.objects.create(title='Counting Stars', album=naive, genre='pop', released_at=rand_dt(), duration=190, explicit=True, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'2.jfif', location=track_loc+'Counting Stars   One Republic.mp3')
+smth_i_need = Track.objects.create(title='Something I need', album=naive, genre='pop', released_at=rand_dt(), duration=220, explicit=False, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'7.jfif', location=track_loc+'smth.mp3')
+sisyephus = Track.objects.create(title='Sisyephus', album=fine, genre='', released_at=rand_dt(), duration=310, explicit=True, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'3.jfif', location=track_loc+'01 Andrew Bird - Sisyphus.mp3')
+switch = Track.objects.create(title='Chemical Switches', album=fine, genre='pop', released_at=rand_dt(), duration=300, explicit=True, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'5.jfif', location=track_loc+'smth.mp3')
+starboy = Track.objects.create(title='Starboy', album=general, genre='pop', released_at=rand_dt(), duration=300, explicit=True, created_at=rand_dt(), total_streams=21, cover_image=track_cov_loc+'2.jfif', location=track_loc+'ONEREPUBLIC - Love Runs Out [Hastidownload.com].mp3')
+
 
 # // add artist(s) to tracks.
 tear.artist.add(pilots)
@@ -283,16 +341,21 @@ sisyephus.artist.add(andrew)
 bones.artist.add(one_r, galantis)
 stressed_out.artist.add(pilots)
 smth_i_need.artist.add(one_r)
+level.artist.add(pilots)
+switch.artist.add(andrew)
+starboy.artist.add(wknd)
 
 # // add track(s) to a playlist
-deez.tracks.add(tear, bones, stressed_out, smth_i_need, through_defaults={'added_at': dt})
+deez.tracks.add(tear, stars, sisyephus, bones, stressed_out, smth_i_need, level, switch, starboy, through_defaults={'added_at': dt})
 nword.tracks.add(stars, through_defaults={'added_at': dt})
-catchy.tracks.add(sisyephus, stars, through_defaults={'added_at': dt})
+catchy.tracks.add(sisyephus, stars, bones, stressed_out, smth_i_need, level, switch, through_defaults={'added_at': dt})
 # adding same tracks overwrites. check before overwrite ??
 catchy.tracks.add(sisyephus, stars, through_defaults={'added_at': dt})
 
+
 # // add track to Favourites
-zznix.favourites.add(stars, smth_i_need)
+zznix.favourites.add(bones, stressed_out, smth_i_need, level, switch)
+
 
 # ============================== READ ==============================
 # ============================== READ ==============================

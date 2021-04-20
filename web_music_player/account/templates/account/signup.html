@@ -43,6 +43,28 @@
                         <div>
                         <small>{{ form.password.errors }}</small>
                     </li>
+                    {% comment %}
+                    <li>
+                        {{ form.password1.label_tag }}
+                            <div class="password">
+                                {{ form.password1 }}
+                                <i class="toggle-pswd ri-eye-line"></i>
+                            </div>
+                        <div>
+                        <small>{{ form.password1.errors }}</small>
+                    </li>
+                    <li>
+                        {{ form.password2.label_tag }}
+                            <div class="password">
+                                {{ form.password2 }}
+                                <i class="toggle-pswd ri-eye-line"></i>
+                            </div>
+                        <div>
+                        <small>{{ form.password2.errors }}</small>
+                    
+                    </li>
+                    {% endcomment %}
+                    
                     <li>
                         <div class="group-col">
                             <div>
@@ -86,6 +108,15 @@
                     </li>
                     {% comment %}django login auth view wont show idnividual errors{% endcomment %}
                     <div>{{ form.non_field_errors }}</div>
+                    {% comment %}
+                    if not iterated after successfull signin shows stale message.
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                    {% endif %}{% endcomment %}
                     <li class="submit-btn">
                         <input type="submit" value="Register">
                     </li>

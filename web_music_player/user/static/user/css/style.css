@@ -126,10 +126,6 @@ aside {
     grid-area: sidebar;
 }
 
-.content {
-    grid-area: content;
-}
-
 .logo {
     display: flex;
     align-items: center;
@@ -147,6 +143,7 @@ aside {
 }
 
 .content {
+    grid-area: content;
     padding: 0 0.5rem;
     padding-right: 0;
     height: 100vh;
@@ -191,6 +188,7 @@ aside {
 
 .account-dropdown img.user-profile-pic {
     width: 30px;
+    height: 30px;
 }
 
 .account {

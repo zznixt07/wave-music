@@ -45,20 +45,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'crispy_forms',
     'django_extensions',
-    'django_admin_generator',
-    'debug_toolbar',
-    'mail_panel',
+    # 'debug_toolbar',
+    # 'mail_panel',
 ]
 
 # DEBUG_TOOLBAR_PANELS = (
 #     'mail_panel.panels.MailToolbarPanel',
 # )
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

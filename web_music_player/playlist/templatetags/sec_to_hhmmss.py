@@ -4,7 +4,10 @@ register = template.Library()
 
 @register.filter
 def sec_to_hhmmss(seconds):
-    seconds = int(seconds)
+    try:
+        seconds = int(seconds)
+    except TypeError:
+        return ''
     rem = seconds % 3600
     HH = seconds // 3600
     MM = rem // 60

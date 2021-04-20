@@ -6,6 +6,14 @@
     {{ user_obj.get_full_name }} - Wave
 {% endblock title %}
 
+{% block inline_css %}
+    <style>
+        .playlist-info {
+            background-image: url("{{ user_obj.profile_pic.url }}");
+        }
+    </style>
+{% endblock inline_css %}
+
 {% block external_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/follow.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'playlist/css/playlist.css' %}">
