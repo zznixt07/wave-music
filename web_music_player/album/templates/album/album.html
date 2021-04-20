@@ -1,0 +1,97 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% load sec_to_hhmmss %}
+
+{% block title %}
+    Album - Wave
+{% endblock title %}
+
+{% block external_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'playlist/css/playlist.css' %}">
+{% endblock external_css %}
+
+{% block content %}
+    <div class="playlist-grid">
+        <header class="playlist-info">
+            <img class="header-img" src="{% static 'user/imgs/3.jfif' %}">
+            <div class="info">
+                <h1 id="playlist-name">{{ current_album.title }}</h1>
+                <p>Released: {{ current_album.released_at|date:"M d, Y" }}</p>
+                <div>
+                    <span>{{ current_album.artist.all|join:", " }}</span>
+                    <ul>
+                        <li>Duration: {{ album_duration|sec_to_hhmmss }}</li>
+                        <li>{{ current_album.ablum_type }}</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="shortcuts">
+            <span class="btn play-playlist ri-play-circle-fill"></span>
+            {% comment %}<span class="btn heart-playlist ri-heart-line"></span>{% endcomment %}
+            {% comment %}<span class="btn">...</span>{% endcomment %}
+        </div>
+        <div class="playlist-add display-none">
+            {% include 'playlist/add_to_playlist_form.html' with playlists=playlists csrf_token=csrf_token only %}
+        </div>
+        <div class="tracks-list">
+            <ul class="tracks">
+                <li class="header-row">
+                    <span class="index" id="track-num">#</span>
+                    <span>Title</span>
+                    <span class="queue-this">&nbsp;</span>
+                    <span class="playlist-this">&nbsp;</span>
+                    <span class="album"></span>
+                    <span class="date-added">Released At</span>
+                    <span class="heart">&nbsp;</span>
+                    <span class="track-duration">Duration</span>
+                </li>
+                {% for track in current_album.track_set.all %}
+                    <li class="" data-track-id="{{ track.id }}">
+                        <div class="index">
+                            <span>{{ forloop.counter }}</span>
+                            <i class="hover btn play-this ri-play-circle-fill"></i>
+                        </div>
+                        <div class="track-artist">
+                            
+                            <img src="/static/user/imgs/34.jfif">
+                            <div class="">
+                                <span>{{ track.title }}</span>
+                                {% with main_artist=track.artist.all|first %}
+                                    <span>
+                                        <a href="{% url 'artist:index' main_artist.id %}">{{ main_artist.get_full_name }}</a>
+                                    </span>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <span class="hidden btn ri-add-line queue-this" title="Add to Queue"></span>
+                        <span class="hidden btn ri-play-list-add-line playlist-this" title="Add to Playlist"></span>
+                        {% if track.explicit %}
+                            <small class="album border-btn min-content" aria-label="album">
+                                Explicit
+                            </small>
+                            {% else %}
+                                <small class="album " aria-label="album"></small>
+                            {% endif %}
+                        <span class="date-added" aria-label="date-added">{{ track.released_at|date:"M d, Y" }}</span>
+                        {% if track in curr_user.favourites.all %}
+                            <span class="btn heart ri-heart-3-fill"></span>
+                        {% else %}
+                            <span class="btn heart ri-heart-3-line"></span>
+                        {% endif %}
+                        <span class="track-duration" aria-label="track-duration">{{ track.duration|sec_to_hhmmss }}</span>
+                    </li>
+                
+                {% endfor %}
+            </ul>
+        </div>
+        <section>
+            {% comment %}<h2>More from {{ current_album.artist.all|join:", " }}</h2>{% endcomment %}
+            {% include 'album/album_cards.html' with album_categories=album_categories only %}
+        </section>
+    </div>
+{% endblock content %}
+
+{% block bottom_js %}
+    <script src="{% static 'playlist/js/playlist.js' %}"></script>
+{% endblock bottom_js %}

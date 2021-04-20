@@ -156,7 +156,7 @@ ul.tracks {padding: 0}
     height: 50%;
     background-color: var(--player-primary-color);
     border-radius: 0.5rem;
-    overflow: auto;
+    overflow-x: hidden;
 }
 
 .add-to-playlist p {

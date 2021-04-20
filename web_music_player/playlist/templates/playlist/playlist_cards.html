@@ -1,0 +1,20 @@
+
+{% for head, playlists in playlist_categories.items %}
+    <h3>{{ head }}</h3>
+    <div class="summary-cards">
+        {% for playlist in playlists %}
+            <div class="my-card">
+                <a href= {% url 'playlist:index' playlist.id %}>
+                    <div class="cover cover-this" aria-label="playlist's cover image">
+                        <img src="/static/user/imgs/23.jfif">
+                        <i data-playlist-id="{{ playlist.id }}" class="hover-play-card ri-play-mini-line"></i>
+                    </div>
+                    <div class="card-info">
+                        <h4 class="title">{{ playlist.name }}</h4>
+                        <div>{{ playlist.description }}</div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}

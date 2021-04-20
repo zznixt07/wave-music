@@ -1,0 +1,20 @@
+
+{% for head, artists in artist_categories.items %}
+    <h3>{{ head }}</h3>
+    <div class="artist-card summary-cards">
+        {% for artist in artists %}
+            <div class="my-card" data-artist-id="{{ artist.id }}">
+                <a href= {% url 'artist:index' artist.id %}>
+                    <div class="cover">
+                        <img src="{{ artist.profile_pic.url }}" class="img rounded-circle">
+                        <i data-artist-id="{{ artist.id }}" class="hover-play-card ri-play-mini-line"></i>
+                    </div>
+                    <div class="card-info">
+                        <span class="title">{{ artist.get_full_name }}</span>
+                        <p>{{ artist.description }}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}

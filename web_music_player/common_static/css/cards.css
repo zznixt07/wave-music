@@ -33,6 +33,10 @@
     object-fit: cover;
 }
 
+.my-card img:hover {
+    filter: brightness(0.25);
+}
+
 .hover-play-card {
     display: none;
     position: absolute;
@@ -41,10 +45,9 @@
     transform: translate(-50%, -50%);
     font-size: 300%;
     border-radius: 50%;
+    /*background-color: var(--secondary-color);*/
 }
-.my-card:hover img {
-    filter: brightness(0.25);
-}
+
 .cover img:hover+.hover-play-card {
     display: block;
 }
@@ -70,17 +73,6 @@
     margin: 0 auto;
 }
 
-.artist-card .my-card {
-    background-color: var(--player-primary-color);
-}
-
-/*.artist-card .my-card:hover {
-    background-color: rgb(37, 36, 39);
-}*/
-
-.artist-card .my-card:hover img {
-    /*filter: none;*/
-}
 
 @media screen and (min-width: 600px) and (max-width: 900px) {
     .summary-cards {

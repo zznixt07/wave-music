@@ -1,0 +1,12 @@
+<form action="" method="POST">
+    <div class="add-to-playlist">
+        <i class="btn close-btn ri-close-line"></i>
+        {% csrf_token %}
+        {% for playlist in playlists %}
+            <p class="btn" data-playlist-id="{{ playlist.id }}">
+                {{ playlist.name }}
+            </p>
+        {% endfor %}
+        {% comment %}<input type="submit" name="Ok" hidden>{% endcomment %}
+    </div>
+</form>

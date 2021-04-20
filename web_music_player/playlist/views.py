@@ -1,13 +1,17 @@
 import logging
 import json
 from datetime import datetime, timezone
+from typing import List
+
 from django.db.models import Sum
 from django.views import generic
+from django.core import serializers
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+
 from .forms import ViewPlaylistForm
 from user.models import Playlist, Userbase, Track
 
@@ -18,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 @login_required
 def update_favourites(request):
     data = json.loads(request.body.decode('utf-8'))
-    curr_user = Userbase.objects.get(username=request.user.username)
+    curr_user = Userbase.objects.get(id=request.user.id)
     now = datetime.now(timezone.utc)
     track = Track.objects.get(id=data['track_id'])
     if request.method == 'POST':
@@ -41,7 +45,7 @@ def update_favourites(request):
 def index(request, playlist_id):    
     "changing header is tricky when using generic views"
 
-    curr_user = Userbase.objects.get(username=request.user.username)
+    curr_user = Userbase.objects.get(id=request.user.id)
     curr_playlist = Playlist.objects.get(id=playlist_id)
     if request.method == 'POST' or request.method == 'DELETE':
         data = json.loads(request.body.decode('utf-8'))
@@ -55,20 +59,15 @@ def index(request, playlist_id):
             curr_playlist.tracks.remove(track)
             info = {'removed': True}
     
-        return JsonResponse(
-            {**{'playlist': curr_playlist.name,
+        return JsonResponse({
+            **{'playlist': curr_playlist.name,
                 'updated_by': curr_user.username,
                 'track': track.title,
                 'success': True},
-            **info}
-        )
+            **info
+        })
     elif request.method == 'GET':
-        other_playlists = curr_user.playlists.all().order_by('-last_played_at')
-        own_playlists = Playlist.objects \
-                            .filter(owner__id=curr_user.id) \
-                            .order_by('-last_played_at')
-
-        user_playlists = list(own_playlists) + list(other_playlists)
+        user_playlists = get_user_playlists_obj(request)
         playlist_duration = curr_playlist.tracks.aggregate(
                      playlist_duration=Sum('duration'))['playlist_duration']
         context = {
@@ -83,8 +82,23 @@ def index(request, playlist_id):
     else:
         return 'HTTPNotAllowed'
 
+@login_required
 def get_track_ids(request, playlist_id):
     return JsonResponse([
         t.id for t in Playlist.objects.get(id=playlist_id).tracks.all()
     ], safe=False)
+
+def get_user_playlists_obj(request) -> List['QuerySet']:
+    curr_user = Userbase.objects.get(id=request.user.id)
+    other_playlists = curr_user.playlists.all().order_by('-last_played_at')
+    own_playlists = Playlist.objects \
+                        .filter(owner__id=curr_user.id) \
+                        .order_by('-last_played_at')
+
+    return list(own_playlists) + list(other_playlists)
+    
+@login_required
+def get_user_playlists(request):
+    serialized = serializers.serialize('json', get_user_playlists_obj(request))
+    return HttpResponse(content=serialized, content_type='application/json')
 

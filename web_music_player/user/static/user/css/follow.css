@@ -1,0 +1,13 @@
+/*.follow-btn {
+    border: 1px solid white;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+*/
+.follow::after {
+    content: "Following";
+}
+
+.no-follow::after {
+    content: "Follow";
+}

@@ -1,4 +1,5 @@
 import logging
+import json
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -33,7 +34,7 @@ def get_tracks_in_playlist(playlist):
 @login_required
 def browse(request):
     playlists = Playlist.objects.all()
-    curr_user = Userbase.objects.get(username=request.user.username)
+    curr_user = Userbase.objects.get(id=request.user.id)
     categories: Dict[str, List['QuerySet']] = {}
     categories['Recently Played'] = Playlist.objects.filter(owner__id=curr_user.id) \
                                     .order_by('-last_played_at')
@@ -58,9 +59,29 @@ def browse(request):
         'artist_categories': artists,
         'songs_categories': songs,
         'Favourite': curr_user.favourites.all(),
+        'user_obj': curr_user,
     }
 
     resp = render(request, 'user/browse.html', context=context)
     resp["X-Frame-Options"] = 'SAMEORIGIN'
     return resp
 
+@login_required
+def activity(request):
+    if request.method == 'POST':
+        curr_user = Userbase.objects.get(id=request.user.id)
+        data = json.loads(request.body.decode('utf-8'))
+        info = {}
+        leader = Userbase.object.get(id=int(data['id']))
+        if data['type'] == 'follow':
+            leader.followers.add(curr_user)
+            info = {'added': True}
+        elif data['type'] == 'unfollow':
+            leader.followers.remove(curr_user)
+            info = {'removed': True}
+        return JsonResponse({
+            **{'leader_id': leader.id,
+            'follower_id': curr_user.id,
+            'success': True},
+            **info,
+        })

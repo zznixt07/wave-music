@@ -8,18 +8,22 @@
 {% block external_css %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/fonts/ronet-Regular.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/cards.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'artist/css/artist.css' %}">
 {% endblock external_css %}
 
 {% block content %}
     
     <div class="main-grid">
         <aside class="">
-            <div class="logo">
-                <img src="{% static 'user/imgs/logo.svg' %}">
-                <span>Wave</span>
-            </div>
-            <div class="sidebar-links">
+            <a class="" href="{% url 'user:browse' %}">
+                <div class="logo">
+                    <img src="{% static 'user/imgs/logo.svg' %}">
+                    <span id="app-name">Wave</span>
+                </div>
+            </a>
+            <div class="sidebar-links" style="display: none">
                 <div>
                     <a href="">
                         <i class="ri-home-6-fill"></i>
@@ -60,14 +64,14 @@
 
         <div class="content">
             <header class="sticky-nav">
-                <div class="tabs">
+                <div class="tabs" style="visibility: hidden;">
                     <a href="#">Playlists</a>
                     <a href="#">Artists</a>
                     <a href="#">Albums</a>
                 </div>
                 
                 <div class="btn account-dropdown">
-                    <img class="user-profile-pic" src="{% static 'user/imgs/logo.svg' %}">
+                    <img class="user-profile-pic rounded-circle" src="{{ user_obj.profile_pic.url }}">
                     <small class="username">{{ user.username }}</small>
                     <a href="#" class="more-account">
                         <i class="ri-arrow-down-s-fill"></i>
@@ -77,7 +81,6 @@
                                 <i class="ri-external-link-line"></i>
                             </p>
                             <p>
-                                {% comment %}<a href="{% url 'account:logout' %}">Log out</a>{% endcomment %}
                                 <span id="logout">Log out</span>
                             </p>
                         </div>
@@ -89,72 +92,15 @@
 
             <div class="browse">
                 <div>
-                    
-                    {% for head, playlists in playlist_categories.items %}
-                        <h3>{{ head }}</h3>
-                        <div class="summary-cards">
-                            {% for playlist in playlists %}
-                                <div class="my-card">
-                                    <a href= {% url 'playlist:index' playlist.id %}>
-                                        <div class="cover cover-this" aria-label="playlist's cover image">
-                                            <i data-playlist-id="{{ playlist.id }}" class="hover-play-card ri-play-mini-line"></i>
-                                        </div>
-                                        <div class="card-info">
-                                            <h4 class="title">{{ playlist.name }}</h4>
-                                            <div>{{ playlist.description }}</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-
+                    {% include 'playlist/playlist_cards.html' with playlist_categories=playlist_categories only %}
                 </div>
 
                 <div>
-                    
-                    {% for head, albums in album_categories.items %}
-                        <h3>{{ head }}</h3>
-                        <div class="summary-cards">
-                            {% for album in albums %}
-                                <div class="my-card" data-album-id="{{ album.id }}">
-                                    <a href= {% url 'album:index' album.id %}>
-                                        <div class="cover" aria-label="Album's cover image">
-                                            <img src="{{ album.cover_image.url }}">
-                                            <i data-album-id="{{ album.id }}" class="hover-play-card ri-play-mini-line"></i>
-                                        </div>
-                                        <div class="card-info">
-                                            <h4 class="title">{{ album.title }}</h4>
-                                            <div>By {{ album.artist.all|join:" and " }}</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
+                    {% include 'album/album_cards.html' with album_categories=album_categories only %}
                 </div>
 
                 <div>
-
-                    {% for head, artists in artist_categories.items %}
-                        <h3>{{ head }}</h3>
-                        <div class="artist-card summary-cards">
-                            {% for artist in artists %}
-                                <div class="my-card" data-artist-id="{{ artist.id }}">
-                                    <a href= {% url 'artist:index' artist.id %}>
-                                        <div class="cover">
-                                            <img src="{{ artist.profile_pic.url }}" class="img rounded-circle">
-                                            <i data-artist-id="{{ artist.id }}" class="hover-play-card ri-play-mini-line"></i>
-                                        </div>
-                                        <div class="card-info">
-                                            <span class="title">{{ artist.get_full_name }}</span>
-                                            <p>{{ artist.description }}</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
+                    {% include 'artist/artist_cards.html' with artist_categories=artist_categories only %}
                 </div>
             </div>        
         </div>
@@ -169,16 +115,17 @@
         //     if (event.origin !== 'http://127.0.0.1:8000') return
         //     console.log('data from parent window :', event.data)
         // })
+        // const cards = document.querySelectorAll('.my-card .cover-this')
+        // for (let card of cards) {
+        //     const img = new Image();
+        //     img.src = `/static/user/imgs/${randomInt(1, 30)}.jfif`
+        //     card.prepend(img)
+        // }
+        
+        // redirect the parent document to logout. else it will appear on iframe.
         document.getElementById('logout').addEventListener('click', () => {
             parent.location.href = '/account/logout/'
         })
-        
-        const cards = document.querySelectorAll('.my-card .cover-this')
-        for (let card of cards) {
-            const img = new Image();
-            img.src = `/static/user/imgs/${randomInt(1, 30)}.jfif`
-            card.prepend(img)
-        }
 
         // show/hide account and logout buttons
         const accLink = document.querySelector('.account-dropdown')
@@ -194,9 +141,8 @@
             }
         })
 
-        // given playlistid, artistid, albumid; fetch and queue the tracks
-        function request(url, id) {
-            
+        /*// given playlistid, artistid, albumid; fetch and queue the tracks
+        function request(url, id) {            
             fetch(url + id + '/', {
                 method: 'GET',
             }).then(resp => resp.json())
@@ -214,7 +160,7 @@
             
         }
 
-        // queue the playlist or artists tracks
+        // play the playlist, album or artists tracks
         const playPlaylistBtns = document.querySelectorAll('.hover-play-card')
         playPlaylistBtns.forEach((btn) => {
             btn.addEventListener('click', (event) => {
@@ -232,7 +178,7 @@
                     request('/album/getTracks/', albumId)
                 }
             })
-        })
+        })*/
 
     </script>
 {% endblock bottom_js %}

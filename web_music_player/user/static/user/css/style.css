@@ -45,7 +45,7 @@ body {
 }
 
 aside {
-    padding: 0 0.5rem;
+    /*padding: 0 0.5rem;*/
 }
 
 .sidebar-links > div, .playlists > * {
@@ -130,18 +130,24 @@ aside {
     grid-area: content;
 }
 
-aside .logo {
+.logo {
     display: flex;
     align-items: center;
+    flex-direction: column;
 }
 
-aside .logo img {
-    width: 64px;
-    height: 64px;
+.logo img {
+    width: 50px;
+    height: 50px;
+}
+
+#app-name {
+    font-family: 'ronet-Regular';
+    font-size: 2.2rem;
 }
 
 .content {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     padding-right: 0;
     height: 100vh;
     /*overflow-y: scroll;*/
@@ -150,7 +156,7 @@ aside .logo img {
     grid-template-rows: 1fr 9fr;
 }
 
-header.sticky-nav {
+.sticky-nav {
     display: flex;
     justify-content: space-between;
     position: sticky;
@@ -159,7 +165,7 @@ header.sticky-nav {
     gap: 0.2rem;
 }
 
-header.sticky-nav .tabs * {
+.sticky-nav .tabs * {
     margin-right: 1rem;
     padding: 0.5rem;
     background-color: var(--hover-bg-color);
@@ -223,7 +229,7 @@ header.sticky-nav .tabs * {
 }
 
 @media screen and (max-width: 400px) {
-    header.sticky-nav .tabs {
+    .sticky-nav .tabs {
         /*display: none;*/
         visibility: hidden;
     }

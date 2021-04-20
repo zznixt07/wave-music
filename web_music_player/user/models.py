@@ -247,7 +247,7 @@ andrew = Artist.objects.create_user(first_name='Andrew', gender='male', last_nam
 galantis = Artist.objects.create_user(first_name='Galantis', gender='female', profile_pic=pp, username='@galantis', password='00',)
 midnight = Artist.objects.create_user(first_name='The Midnight', gender='female', profile_pic=pp, username='theMidnight', password='00',)
 
-# // add followers to artists (same as above)
+# // add followers to artists (same as above-above)
 pilots.followers.add(zznix, kells)
 one_r.followers.add(zznix)
 andrew.followers.add(kells, lekha)

@@ -15,11 +15,12 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/remixicon/remixicon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cards.css' %}">
 
     {% block external_css %} {% endblock external_css %}
         
     {% block top_js %}
-        <script src="{% static 'js/utils.js' %}"></script>
     {% endblock top_js %}
     <style>* {line-height: normal !important;}</style>
 </head>
@@ -28,5 +29,8 @@
     {% block content %} {% endblock content %}
 
     {% block bottom_js %} {% endblock bottom_js %}
+
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/play_cards.js' %}"></script>
 </body>
 </html>

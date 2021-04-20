@@ -4,5 +4,6 @@ from . import views
 app_name = 'site_user'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('browse/', views.browse, name='browse'),    
+    path('browse/', views.browse, name='browse'),
+    path('activity/', views.activity, name='activity'),
 ]
