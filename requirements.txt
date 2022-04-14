@@ -1,2 +1,5 @@
 tinytag
 Pillow
+mysqlclient
+django-crispy-forms
+django-extensions
